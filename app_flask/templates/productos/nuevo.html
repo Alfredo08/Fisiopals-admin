@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Nuevo Producto
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Nuevo producto</h1>
+      <p class="page-description">Registra un nuevo producto para el inventario de Fisiopals.</p>
+    </div>
+    <a href="/productos" class="btn btn-secondary">Volver</a>
+  </div>
+  <!-- Formulario -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Información del producto</div>
+    <div class="card-body">
+      <form action="/productos/crear" method="POST">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" name="nombre" class="form-control" value="{{ request.form.get('nombre', '') }}" required />
+          {% with mensajes=get_flashed_messages(category_filter=['error_nombre']) %}
+            {% for mensaje in mensajes %}
+              <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+            {% endfor %}
+          {% endwith %}
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" id="precio" name="precio" class="form-control" step="0.01" min="0" value="{{ request.form.get('precio', '') }}" required />
+            </div>
+            {% with mensajes=get_flashed_messages(category_filter=['error_precio']) %}
+              {% for mensaje in mensajes %}
+                <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+              {% endfor %}
+            {% endwith %}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="stock" class="form-label">Stock inicial</label>
+            <input type="number" id="stock" name="stock" class="form-control" min="0" value="{{ request.form.get('stock', '') }}" required />
+            <small class="text-soft">Cantidad disponible al registrar el producto.</small>
+            {% with mensajes=get_flashed_messages(category_filter=['error_stock']) %}
+              {% for mensaje in mensajes %}
+                <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+              {% endfor %}
+            {% endwith %}
+          </div>
+        </div>
+        <!-- Botones -->
+        <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2 mt-4">
+          <a href="/productos" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Guardar producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

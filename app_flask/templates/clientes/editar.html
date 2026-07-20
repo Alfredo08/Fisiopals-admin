@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Editar Cliente
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Editar cliente</h1>
+      <p class="page-description">Actualiza la información de {{ cliente.nombre }}.</p>
+    </div>
+    <a href="/clientes/{{ cliente.id_cliente }}" class="btn btn-secondary">Volver al detalle</a>
+  </div>
+  <!-- Formulario -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Información del cliente</div>
+    <div class="card-body">
+      <form action="/clientes/{{ cliente.id_cliente }}/actualizar" method="POST">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" name="nombre" class="form-control" value="{{ cliente.nombre }}" required />
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" id="correo" name="correo" class="form-control" value="{{ cliente.correo }}" required />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" id="telefono" name="telefono" class="form-control" value="{{ cliente.telefono }}" required />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="saldo" class="form-label">Saldo</label>
+          <input type="number" id="saldo" name="saldo" class="form-control" step="0.01" value="{{ cliente.saldo }}" required />
+          <small class="text-soft">Un saldo positivo representa saldo a favor; uno negativo, saldo en contra.</small>
+        </div>
+        <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+          <a href="/clientes/{{ cliente.id_cliente }}" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

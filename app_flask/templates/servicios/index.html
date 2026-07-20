@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Servicios
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Servicios</h1>
+      <p class="page-description">Consulta y administra los tratamientos y servicios disponibles.</p>
+    </div>
+    <a href="/servicios/nuevo" class="btn btn-primary">+ Nuevo servicio</a>
+  </div>
+  <!-- Buscador -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-body">
+      <form action="/servicios" method="GET">
+        <div class="input-group">
+          <input type="text" name="busqueda" class="form-control" placeholder="Buscar servicio por nombre o descripción..." value="{{ busqueda }}" />
+          <button type="submit" class="btn btn-primary">Buscar</button>
+          <a href="/servicios" class="btn btn-secondary">Limpiar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Tabla -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Servicios registrados</div>
+    <div class="card-body p-0">
+      {% if servicios|length == 0 %}
+        <div class="text-center py-5">
+          <h5>No hay servicios registrados</h5>
+          <p class="text-soft mb-0">Comienza agregando el primer servicio.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Servicio</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for servicio in servicios %}
+                <tr>
+                  <td>
+                    <a href="/servicios/{{ servicio.id_servicio }}" class="app-link">{{ servicio.nombre }}</a>
+                  </td>
+                  <td>{{ servicio.descripcion }}</td>
+                  <td class="fw-semibold text-nowrap">${{ '%.2f'|format(servicio.precio) }}</td>
+                  <td class="text-center text-nowrap">
+                    <a href="/servicios/{{ servicio.id_servicio }}" class="btn btn-sm btn-outline-custom">Ver</a>
+                    <a href="/servicios/{{ servicio.id_servicio }}/editar" class="btn btn-sm btn-primary">Editar</a>
+                    <form action="/servicios/{{ servicio.id_servicio }}/eliminar" method="POST" class="d-inline" onsubmit="return confirm('¿Deseas eliminar este servicio?');">
+                      <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

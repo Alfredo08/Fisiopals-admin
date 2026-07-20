@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Órdenes
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Órdenes</h1>
+      <p class="page-description">Administra las ventas de productos, servicios y pagos registrados.</p>
+    </div>
+    <a href="/ordenes/nueva" class="btn btn-primary">+ Nueva orden</a>
+  </div>
+  <!-- Tabla -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Historial de órdenes</div>
+    <div class="card-body p-0">
+      {% if ordenes|length == 0 %}
+        <div class="text-center py-5">
+          <h5>No existen órdenes registradas</h5>
+          <p class="text-soft mb-0">Crea la primera orden para comenzar a registrar ventas.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Orden</th>
+                <th>Cliente / Comprador</th>
+                <th>Paciente</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th>Fecha</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for orden in ordenes %}
+                <tr>
+                  <td class="text-nowrap">
+                    <a href="/ordenes/{{ orden.id_orden }}" class="app-link">#{{ orden.id_orden }}</a>
+                  </td>
+                  <td>
+                    {% if orden.id_cliente %}
+                      <a href="/clientes/{{ orden.id_cliente }}" class="app-link">{{ orden.cliente_nombre }}</a>
+                    {% elif orden.nombre_comprador %}
+                      {{ orden.nombre_comprador }}
+                    {% else %}
+                      <span class="text-soft">No disponible</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if orden.id_paciente %}
+                      <a href="/pacientes/{{ orden.id_paciente }}" class="app-link">{{ orden.paciente_nombre }}</a>
+                    {% else %}
+                      <span class="text-soft">Venta general</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if orden.id_paciente %}
+                      <a href="/pacientes/{{ orden.id_paciente }}" class="app-link">{{ orden.paciente_nombre }}</a>
+                    {% else %}
+                      <span class="text-soft">Venta general</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if orden.estado == 'pendiente' %}
+                      <span class="badge badge-pendiente">Pendiente</span>
+                    {% elif orden.estado == 'pagada' %}
+                      <span class="badge badge-pagada">Pagada</span>
+                    {% elif orden.estado == 'cancelada' %}
+                      <span class="badge badge-cancelada">Cancelada</span>
+                    {% endif %}
+                  </td>
+                  <td class="fw-semibold text-nowrap">${{ '%.2f'|format(orden.total) }}</td>
+                  <td class="text-nowrap">{{ orden.fecha_creacion.strftime('%d/%m/%Y') }}</td>
+                  <td class="text-center text-nowrap">
+                    <a href="/ordenes/{{ orden.id_orden }}" class="btn btn-sm btn-outline-custom">Ver orden</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

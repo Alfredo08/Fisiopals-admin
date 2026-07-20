@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  {{ cliente.nombre }}
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">{{ cliente.nombre }}</h1>
+      <p class="page-description">Información del cliente, saldo disponible y pacientes asociados.</p>
+    </div>
+    <a href="/clientes/{{ cliente.id_cliente }}/editar" class="btn btn-primary">Editar cliente</a>
+  </div>
+  <!-- Información del cliente -->
+  <div class="card shadow-soft mb-4 overflow-hidden">
+    <div class="card-header">Información del cliente</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Correo</p>
+          <p class="fw-semibold mb-0">{{ cliente.correo }}</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Teléfono</p>
+          <p class="fw-semibold mb-0">{{ cliente.telefono }}</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Saldo actual</p>
+          {% if cliente.saldo > 0 %}
+            <p class="saldo-positivo fs-5 mb-0">${{ '%.2f'|format(cliente.saldo) }}
+              a favor</p>
+          {% elif cliente.saldo < 0 %}
+            <p class="saldo-negativo fs-5 mb-0">${{ '%.2f'|format(cliente.saldo|abs) }}
+              en contra</p>
+          {% else %}
+            <p class="fw-semibold fs-5 mb-0">$0.00</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Agregar saldo -->
+  <div class="card shadow-soft mb-4 overflow-hidden">
+    <div class="card-header">Agregar saldo</div>
+    <div class="card-body">
+      <form action="/clientes/{{ cliente.id_cliente }}/agregar-saldo" method="POST">
+        <div class="row align-items-end">
+          <div class="col-md-6 mb-3">
+            <label for="monto" class="form-label">Monto</label>
+            <input type="number" id="monto" name="monto" class="form-control" step="0.01" min="0.01" placeholder="0.00" required />
+          </div>
+          <div class="col-md-3 mb-3">
+            <button type="submit" class="btn btn-primary w-100">Agregar saldo</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Pacientes -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Pacientes del cliente</div>
+    <div class="card-body p-0">
+      {% if cliente.pacientes|length == 0 %}
+        <div class="text-center py-5">
+          <h5>No hay pacientes asociados</h5>
+          <p class="text-soft mb-0">Este cliente todavía no tiene pacientes registrados.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Especie</th>
+                <th>Raza</th>
+                <th>Edad</th>
+                <th class="text-center">Expediente</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for paciente in cliente.pacientes %}
+                <tr>
+                  <td>
+                    <a href="/pacientes/{{ paciente.id_paciente }}" class="app-link">{{ paciente.nombre }}</a>
+                  </td>
+                  <td>{{ paciente.especie }}</td>
+                  <td>{{ paciente.raza }}</td>
+                  <td>{{ paciente.edad }}</td>
+                  <td class="text-center">
+                    <a href="/pacientes/{{ paciente.id_paciente }}" class="btn btn-sm btn-outline-custom">Ver expediente</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

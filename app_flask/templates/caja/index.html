@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Caja
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Caja</h1>
+      <p class="page-description">Consulta los pagos y abonos recibidos por fecha.</p>
+    </div>
+  </div>
+  <!-- Filtro de fecha -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Filtrar movimientos</div>
+    <div class="card-body">
+      <form action="/caja" method="GET">
+        <div class="row align-items-end">
+          <div class="col-md-5 mb-3">
+            <label for="fecha" class="form-label">Fecha</label>
+            <input type="date" id="fecha" name="fecha" class="form-control" value="{{ fecha_seleccionada }}" required />
+          </div>
+          <div class="col-md-3 mb-3">
+            <button type="submit" class="btn btn-primary w-100">Consultar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Resumen -->
+  <div class="row g-4 mb-4">
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-dashboard shadow-soft h-100">
+        <div class="card-body">
+          <p class="text-soft mb-2">Total recibido</p>
+          <h3 class="mb-0">${{ '%.2f'|format(totales.total_general) }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-dashboard shadow-soft h-100">
+        <div class="card-body">
+          <p class="text-soft mb-2">Efectivo</p>
+          <h3 class="mb-0">${{ '%.2f'|format(totales.total_efectivo) }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-dashboard shadow-soft h-100">
+        <div class="card-body">
+          <p class="text-soft mb-2">Transferencia</p>
+          <h3 class="mb-0">${{ '%.2f'|format(totales.total_transferencia) }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-dashboard shadow-soft h-100">
+        <div class="card-body">
+          <p class="text-soft mb-2">Movimientos</p>
+          <h3 class="mb-0">{{ totales.cantidad_movimientos }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Movimientos -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Movimientos del
+      {{ fecha_seleccionada }}</div>
+    <div class="card-body p-0">
+      {% if movimientos|length == 0 %}
+        <div class="text-center py-5">
+          <h5>No hay movimientos registrados</h5>
+          <p class="text-soft mb-0">No se encontraron abonos en la fecha seleccionada.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Orden</th>
+                <th>Cliente / Comprador</th>
+                <th>Paciente</th>
+                <th>Método</th>
+                <th>Abono</th>
+                <th>Estado del pago</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for movimiento in movimientos %}
+                <tr>
+                  <td class="text-nowrap">{{ movimiento.fecha_pago.strftime('%H:%M') }}</td>
+                  <td class="text-nowrap">
+                    <a href="/ordenes/{{ movimiento.id_orden }}" class="app-link">Orden #{{ movimiento.id_orden }}</a>
+                  </td>
+                  <td>
+                    {% if movimiento.id_cliente %}
+                      <a href="/clientes/{{ movimiento.id_cliente }}" class="app-link">{{ movimiento.nombre_cliente }}</a>
+                    {% else %}
+                      {{ movimiento.nombre_comprador }}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if movimiento.id_paciente %}
+                      <a href="/pacientes/{{ movimiento.id_paciente }}" class="app-link">{{ movimiento.nombre_paciente }}</a>
+                    {% else %}
+                      <span class="text-soft">No aplica</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if movimiento.metodo_pago == 'efectivo' %}
+                      <span class="badge badge-metodo-efectivo">Efectivo</span>
+                    {% elif movimiento.metodo_pago == 'transferencia' %}
+                      <span class="badge badge-metodo-transferencia">Transferencia</span>
+                    {% endif %}
+                  </td>
+                  <td class="fw-bold text-nowrap">${{ '%.2f'|format(movimiento.monto) }}</td>
+                  <td>
+                    {% if movimiento.estado_pago == 'pagada' %}
+                      <span class="badge badge-pagada">Pagada</span>
+                    {% elif movimiento.estado_pago == 'parcial' %}
+                      <span class="badge badge-pendiente">Parcial</span>
+                    {% else %}
+                      <span class="badge badge-cancelada">Pendiente</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center text-nowrap">
+                    <a href="/ordenes/{{ movimiento.id_orden }}" class="btn btn-sm btn-outline-custom">Ver orden</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

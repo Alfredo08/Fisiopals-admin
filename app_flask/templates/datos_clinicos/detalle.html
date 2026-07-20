@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Sesión Clínica
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Sesión clínica #{{ dato_clinico.id_dato_clinico }}</h1>
+      <p class="page-description">
+        Paciente:
+        <a href="/pacientes/{{ dato_clinico.paciente.id_paciente }}" class="app-link">
+          {{ dato_clinico.paciente.nombre }}
+          {{ dato_clinico.paciente.codigo_paciente() }}
+        </a>
+        ·
+        {{ dato_clinico.fecha.strftime('%d/%m/%Y') }}
+      </p>
+    </div>
+    <div class="d-flex flex-column flex-sm-row gap-2">
+      <a href="/pacientes/{{ dato_clinico.paciente.id_paciente }}" class="btn btn-secondary">Volver al paciente</a>
+      <a href="/datos-clinicos/{{ dato_clinico.id_dato_clinico }}/editar" class="btn btn-primary">Editar sesión</a>
+    </div>
+  </div>
+  <!-- Información general -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Información de la sesión</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <p class="text-soft mb-1">Fecha</p>
+          <p class="fw-semibold mb-0">{{ dato_clinico.fecha.strftime('%d/%m/%Y') }}</p>
+        </div>
+        <div class="col-md-6 mb-3">
+          <p class="text-soft mb-1">Paciente</p>
+          <p class="mb-0">
+            <a href="/pacientes/{{ dato_clinico.paciente.id_paciente }}" class="app-link">
+              {{ dato_clinico.paciente.nombre }}
+              -
+              {{ dato_clinico.paciente.codigo_paciente() }}
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Retroalimentación -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Retroalimentación</div>
+    <div class="card-body clinical-text">{{ dato_clinico.retroalimentacion }}</div>
+  </div>
+  <!-- Palpación / examen -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Palpación / Examen</div>
+    <div class="card-body clinical-text">{{ dato_clinico.palpacion_examen }}</div>
+  </div>
+  <!-- Trabajo de sesión -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Trabajo realizado durante la sesión</div>
+    <div class="card-body clinical-text">{{ dato_clinico.trabajo_sesion }}</div>
+  </div>
+  <!-- Objetivos -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Objetivos para la siguiente sesión</div>
+    <div class="card-body clinical-text">{{ dato_clinico.objetivos }}</div>
+  </div>
+  <!-- Trabajo en casa -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Trabajo para casa</div>
+    <div class="card-body clinical-text">{{ dato_clinico.trabajo_casa }}</div>
+  </div>
+  <!-- Acción peligrosa -->
+  <div class="d-flex justify-content-end">
+    <form action="/datos-clinicos/{{ dato_clinico.id_dato_clinico }}/eliminar" method="POST" onsubmit="return confirm('¿Deseas eliminar esta sesión clínica? Esta acción no se puede deshacer.');">
+      <button type="submit" class="btn btn-danger">Eliminar sesión clínica</button>
+    </form>
+  </div>
+{% endblock %}

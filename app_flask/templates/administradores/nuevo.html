@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Nuevo Administrador
+{% endblock %}
+{% block contenido %}
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-9 col-lg-6">
+      <div class="card shadow-soft overflow-hidden">
+        <div class="login-header">
+          <img src="{{ url_for('static', filename='img/Fisiopals_logo.jpg') }}" alt="Logo de Fisiopals" class="login-logo" />
+          <h1 class="login-title fs-3">Crear administrador</h1>
+          <p class="text-soft mb-0 mt-2">Registra una nueva cuenta administrativa.</p>
+        </div>
+        <div class="card-body p-4">
+          <form action="/admins/crear" method="POST">
+            <div class="mb-3">
+              <label for="nombre_completo" class="form-label">Nombre completo</label>
+              <input type="text" id="nombre_completo" name="nombre_completo" class="form-control" value="{{ request.form.get('nombre_completo', '') }}" autocomplete="name" autofocus required />
+              {% with mensajes=get_flashed_messages(category_filter=['error_nombre_completo']) %}
+                {% for mensaje in mensajes %}
+                  <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+                {% endfor %}
+              {% endwith %}
+            </div>
+            <div class="mb-3">
+              <label for="correo" class="form-label">Correo</label>
+              <input type="email" id="correo" name="correo" class="form-control" value="{{ request.form.get('correo', '') }}" autocomplete="email" required />
+              {% with mensajes=get_flashed_messages(category_filter=['error_correo']) %}
+                {% for mensaje in mensajes %}
+                  <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+                {% endfor %}
+              {% endwith %}
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input type="password" id="password" name="password" class="form-control" autocomplete="new-password" required />
+              {% with mensajes=get_flashed_messages(category_filter=['error_password']) %}
+                {% for mensaje in mensajes %}
+                  <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+                {% endfor %}
+              {% endwith %}
+            </div>
+            <div class="mb-4">
+              <label for="password_confirmar" class="form-label">Confirmar contraseña</label>
+              <input type="password" id="password_confirmar" name="password_confirmar" class="form-control" autocomplete="new-password" required />
+            </div>
+            <div class="d-flex flex-column-reverse flex-sm-row justify-content-between gap-2">
+              <a href="/" class="btn btn-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary">Crear administrador</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

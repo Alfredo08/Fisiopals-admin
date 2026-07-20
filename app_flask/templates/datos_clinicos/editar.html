@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block titulo %}
+Editar Sesión Clínica
+{% endblock %}
+{% block contenido %}
+<!-- Encabezado -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title">
+            Editar sesión clínica
+        </h1>
+        <p class="page-description">
+            Actualiza la información de la sesión
+            #{{ dato_clinico.id_dato_clinico }}
+            del paciente
+            <a
+                href="/pacientes/{{ dato_clinico.id_paciente }}"
+                class="app-link">
+                {{ dato_clinico.paciente.nombre if dato_clinico.paciente else 'Paciente' }}
+            </a>.
+        </p>
+    </div>
+    <a
+        href="/datos-clinicos/{{ dato_clinico.id_dato_clinico }}"
+        class="btn btn-secondary">
+        Volver al detalle
+    </a>
+</div>
+<form
+    action="/datos-clinicos/{{ dato_clinico.id_dato_clinico }}/actualizar"
+    method="POST">
+    <!-- Información general -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Información de la sesión
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label
+                    for="fecha"
+                    class="form-label">
+                    Fecha de la sesión
+                </label>
+                <input
+                    type="date"
+                    id="fecha"
+                    name="fecha"
+                    class="form-control"
+                    value="{{ dato_clinico.fecha.strftime('%Y-%m-%d') }}"
+                    required>
+            </div>
+        </div>
+    </div>
+    <!-- Retroalimentación -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Retroalimentación
+        </div>
+        <div class="card-body">
+            <textarea
+                id="retroalimentacion"
+                name="retroalimentacion"
+                class="form-control"
+                rows="5"
+                required>{{ dato_clinico.retroalimentacion }}</textarea>
+            {% with mensajes = get_flashed_messages(
+                category_filter=['error_retroalimentacion']
+            ) %}
+                {% for mensaje in mensajes %}
+                    <small class="text-danger d-block mt-2">
+                        {{ mensaje }}
+                    </small>
+                {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+    <!-- Palpación -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Palpación / Examen
+        </div>
+        <div class="card-body">
+            <textarea
+                id="palpacion_examen"
+                name="palpacion_examen"
+                class="form-control"
+                rows="5"
+                required>{{ dato_clinico.palpacion_examen }}</textarea>
+            {% with mensajes = get_flashed_messages(
+                category_filter=['error_palpacion_examen']
+            ) %}
+                {% for mensaje in mensajes %}
+                    <small class="text-danger d-block mt-2">
+                        {{ mensaje }}
+                    </small>
+                {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+    <!-- Trabajo realizado -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Trabajo realizado durante la sesión
+        </div>
+        <div class="card-body">
+            <textarea
+                id="trabajo_sesion"
+                name="trabajo_sesion"
+                class="form-control"
+                rows="6"
+                required>{{ dato_clinico.trabajo_sesion }}</textarea>
+            {% with mensajes = get_flashed_messages(
+                category_filter=['error_trabajo_sesion']
+            ) %}
+                {% for mensaje in mensajes %}
+                    <small class="text-danger d-block mt-2">
+                        {{ mensaje }}
+                    </small>
+                {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+    <!-- Objetivos -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Observaciones para la siguiente sesión
+        </div>
+        <div class="card-body">
+            <textarea
+                id="objetivos"
+                name="objetivos"
+                class="form-control"
+                rows="5"
+                required>{{ dato_clinico.objetivos }}</textarea>
+            {% with mensajes = get_flashed_messages(
+                category_filter=['error_objetivos']
+            ) %}
+                {% for mensaje in mensajes %}
+                    <small class="text-danger d-block mt-2">
+                        {{ mensaje }}
+                    </small>
+                {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+    <!-- Trabajo para casa -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Trabajo para casa
+        </div>
+        <div class="card-body">
+            <textarea
+                id="trabajo_casa"
+                name="trabajo_casa"
+                class="form-control"
+                rows="5"
+                required>{{ dato_clinico.trabajo_casa }}</textarea>
+            {% with mensajes = get_flashed_messages(
+                category_filter=['error_trabajo_casa']
+            ) %}
+                {% for mensaje in mensajes %}
+                    <small class="text-danger d-block mt-2">
+                        {{ mensaje }}
+                    </small>
+                {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+    <!-- Acciones -->
+    <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+        <a
+            href="/datos-clinicos/{{ dato_clinico.id_dato_clinico }}"
+            class="btn btn-secondary">
+            Cancelar
+        </a>
+        <button
+            type="submit"
+            class="btn btn-primary">
+            Guardar cambios
+        </button>
+    </div>
+</form>
+{% endblock %}

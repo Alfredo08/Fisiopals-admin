@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Clientes
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Clientes</h1>
+      <p class="page-description">Administra la información de los propietarios registrados.</p>
+    </div>
+    <a href="/clientes/nuevo" class="btn btn-primary">+ Nuevo cliente</a>
+  </div>
+  <!-- Buscador -->
+  <div class="card shadow-soft mb-4">
+    <div class="card-body">
+      <form action="/clientes" method="GET">
+        <div class="input-group">
+          <input type="text" name="busqueda" class="form-control" placeholder="Buscar por nombre, correo o teléfono..." value="{{ busqueda }}" />
+          <button class="btn btn-primary">Buscar</button>
+          <a href="/clientes" class="btn btn-secondary">Limpiar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Tabla -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Clientes registrados</div>
+    <div class="card-body p-0">
+      {% if clientes|length == 0 %}
+        <div class="text-center py-5">
+          <h5>No hay clientes registrados</h5>
+          <p class="text-soft mb-0">Comienza creando tu primer cliente.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Saldo</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for cliente in clientes %}
+                <tr>
+                  <td>
+                    <a href="/clientes/{{ cliente.id_cliente }}" class="app-link">{{ cliente.nombre }}</a>
+                  </td>
+                  <td>{{ cliente.correo }}</td>
+                  <td>{{ cliente.telefono }}</td>
+                  <td>
+                    {% if cliente.saldo >= 0 %}
+                      <span class="saldo-positivo">${{ '%.2f'|format(cliente.saldo) }}</span>
+                    {% else %}
+                      <span class="text-danger fw-semibold">${{ '%.2f'|format(cliente.saldo) }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    <a href="/clientes/{{ cliente.id_cliente }}" class="btn btn-sm btn-outline-custom">Ver</a>
+                    <a href="/clientes/{{ cliente.id_cliente }}/editar" class="btn btn-sm btn-primary">Editar</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

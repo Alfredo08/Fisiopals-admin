@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  {{ paciente.nombre }}
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">{{ paciente.nombre }}</h1>
+      <p class="page-description">Expediente {{ paciente.codigo_paciente() }}</p>
+    </div>
+    <div class="d-flex flex-column flex-sm-row gap-2">
+      <a href="/pacientes" class="btn btn-secondary">Volver</a>
+      <a href="/pacientes/{{ paciente.id_paciente }}/editar" class="btn btn-primary">Editar paciente</a>
+    </div>
+  </div>
+  <!-- Información general -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Información general</div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Código del paciente</p>
+          <p class="fw-semibold mb-0">{{ paciente.codigo_paciente() }}</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Cliente</p>
+          <p class="mb-0">
+            <a href="/clientes/{{ paciente.cliente.id_cliente }}" class="app-link">{{ paciente.cliente.nombre }}</a>
+          </p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Inicio del problema</p>
+          <p class="fw-semibold mb-0">
+            {% if paciente.inicio_problema %}
+              {{ paciente.inicio_problema.strftime('%d/%m/%Y') }}
+            {% else %}
+              <span class="text-soft">No especificado</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <p class="text-soft mb-1">Especie</p>
+          <p class="fw-semibold mb-0">{{ paciente.especie }}</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <p class="text-soft mb-1">Raza</p>
+          <p class="fw-semibold mb-0">{{ paciente.raza }}</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <p class="text-soft mb-1">Edad</p>
+          <p class="fw-semibold mb-0">{{ paciente.edad }}</p>
+        </div>
+        <div class="col-md-3 mb-3">
+          <p class="text-soft mb-1">Sexo</p>
+          <p class="fw-semibold mb-0">{{ paciente.sexo }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Información clínica inicial -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header">Información clínica inicial</div>
+    <div class="card-body">
+      <div class="mb-4">
+        <p class="text-soft mb-1">Historia clínica</p>
+        <p class="mb-0">
+          {% if paciente.historia_clinica %}
+            {{ paciente.historia_clinica }}
+          {% else %}
+            <span class="text-soft">No registrada</span>
+          {% endif %}
+        </p>
+      </div>
+      <div>
+        <p class="text-soft mb-1">Diagnóstico veterinario</p>
+        <p class="mb-0">
+          {% if paciente.diagnostico_vet %}
+            {{ paciente.diagnostico_vet }}
+          {% else %}
+            <span class="text-soft">No registrado</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- Historial clínico -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+      <span>Historial clínico</span>
+      <a href="/pacientes/{{ paciente.id_paciente }}/datos-clinicos/nuevo" class="btn btn-primary btn-sm">Nueva sesión clínica</a>
+    </div>
+    <div class="card-body p-0">
+      {% if paciente.datos_clinicos|length == 0 %}
+        <div class="text-center py-5">
+          <h5>Sin sesiones clínicas</h5>
+          <p class="text-soft mb-0">Este paciente aún no tiene sesiones clínicas registradas.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Observaciones</th>
+                <th>Trabajo en sesión</th>
+                <th>Trabajo en casa</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for dato in paciente.datos_clinicos %}
+                <tr>
+                  <td class="text-nowrap">{{ dato.fecha.strftime('%d/%m/%Y') }}</td>
+                  <td>{{ dato.objetivos }}</td>
+                  <td>{{ dato.trabajo_sesion }}</td>
+                  <td>{{ dato.trabajo_casa }}</td>
+                  <td class="text-center text-nowrap">
+                    <a href="/datos-clinicos/{{ dato.id_dato_clinico }}" class="btn btn-sm btn-outline-custom">Ver</a>
+                    <a href="/datos-clinicos/{{ dato.id_dato_clinico }}/editar" class="btn btn-sm btn-primary">Editar</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

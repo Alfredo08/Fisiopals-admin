@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% block titulo %}
+Nuevo Paciente
+{% endblock %}
+{% block contenido %}
+<!-- Encabezado -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title">
+            Nuevo paciente
+        </h1>
+        <p class="page-description">
+            Registra un nuevo paciente y asígnalo a uno de los clientes existentes.
+        </p>
+    </div>
+    <a
+        href="/pacientes"
+        class="btn btn-secondary">
+        Volver
+    </a>
+</div>
+<!-- Formulario -->
+<div class="card shadow-soft overflow-hidden">
+    <div class="card-header">
+        Información del paciente
+    </div>
+    <div class="card-body">
+        <form
+            action="/pacientes/crear"
+            method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="id_cliente"
+                        class="form-label">
+                        Cliente
+                    </label>
+                    <select
+                        id="id_cliente"
+                        name="id_cliente"
+                        class="form-select"
+                        required>
+                        <option value="">
+                            Selecciona un cliente
+                        </option>
+                        {% for cliente in clientes %}
+                            <option
+                                value="{{ cliente.id_cliente }}"
+                                {% if request.form.get('id_cliente')|string == cliente.id_cliente|string %}
+                                    selected
+                                {% endif %}>
+                                {{ cliente.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_id_cliente']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="nombre"
+                        class="form-label">
+                        Nombre
+                    </label>
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        class="form-control"
+                        value="{{ request.form.get('nombre', '') }}"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_nombre']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label
+                        for="especie"
+                        class="form-label">
+                        Especie
+                    </label>
+                    <select
+                        id="especie"
+                        name="especie"
+                        class="form-select"
+                        required>
+                        <option value="">
+                            Selecciona una especie
+                        </option>
+                        <option
+                            value="Canino"
+                            {% if request.form.get('especie') == 'Canino' %}
+                                selected
+                            {% endif %}>
+                            Canino
+                        </option>
+                        <option
+                            value="Felino"
+                            {% if request.form.get('especie') == 'Felino' %}
+                                selected
+                            {% endif %}>
+                            Felino
+                        </option>
+                        <option
+                            value="Equino"
+                            {% if request.form.get('especie') == 'Equino' %}
+                                selected
+                            {% endif %}>
+                            Equino
+                        </option>
+                        <option
+                            value="No convencional"
+                            {% if request.form.get('especie') == 'No convencional' %}
+                                selected
+                            {% endif %}>
+                            No convencional
+                        </option>
+                    </select>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_especie']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label
+                        for="raza"
+                        class="form-label">
+                        Raza
+                    </label>
+                    <input
+                        type="text"
+                        id="raza"
+                        name="raza"
+                        class="form-control"
+                        value="{{ request.form.get('raza', '') }}"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_raza']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label
+                        for="edad"
+                        class="form-label">
+                        Edad
+                    </label>
+                    <input
+                        type="number"
+                        id="edad"
+                        name="edad"
+                        class="form-control"
+                        min="0"
+                        value="{{ request.form.get('edad', '') }}"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_edad']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="sexo"
+                        class="form-label">
+                        Sexo
+                    </label>
+                    <select
+                        id="sexo"
+                        name="sexo"
+                        class="form-select"
+                        required>
+                        <option value="">
+                            Selecciona una opción
+                        </option>
+                        <option value="Macho"
+                            {% if request.form.get('sexo') == 'Macho' %}selected{% endif %}>
+                            Macho
+                        </option>
+
+                        <option value="Macho castrado"
+                            {% if request.form.get('sexo') == 'Macho castrado' %}selected{% endif %}>
+                            Macho castrado
+                        </option>
+
+                        <option value="Hembra"
+                            {% if request.form.get('sexo') == 'Hembra' %}selected{% endif %}>
+                            Hembra
+                        </option>
+
+                        <option value="Hembra castrada"
+                            {% if request.form.get('sexo') == 'Hembra castrada' %}selected{% endif %}>
+                            Hembra castrada
+                        </option>
+                    </select>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_sexo']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="inicio_problema"
+                        class="form-label">
+                        Inicio del problema
+                    </label>
+                    <input
+                        type="datetime-local"
+                        id="inicio_problema"
+                        name="inicio_problema"
+                        class="form-control"
+                        value="{{ request.form.get('inicio_problema', '') }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label
+                    for="historia_clinica"
+                    class="form-label">
+                    Historia clínica
+                </label>
+                <textarea
+                    id="historia_clinica"
+                    name="historia_clinica"
+                    class="form-control"
+                    rows="5">{{ request.form.get('historia_clinica', '') }}</textarea>
+                {% with mensajes = get_flashed_messages(
+                    category_filter=['error_historia_clinica']
+                ) %}
+                    {% for mensaje in mensajes %}
+                        <small class="text-danger d-block mt-1">
+                            {{ mensaje }}
+                        </small>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+            <div class="mb-4">
+                <label
+                    for="diagnostico_vet"
+                    class="form-label">
+                    Diagnóstico veterinario
+                </label>
+                <textarea
+                    id="diagnostico_vet"
+                    name="diagnostico_vet"
+                    class="form-control"
+                    rows="4">{{ request.form.get('diagnostico_vet', '') }}</textarea>
+                {% with mensajes = get_flashed_messages(
+                    category_filter=['error_diagnostico_vet']
+                ) %}
+                    {% for mensaje in mensajes %}
+                        <small class="text-danger d-block mt-1">
+                            {{ mensaje }}
+                        </small>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+            <!-- Acciones -->
+            <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+                <a
+                    href="/pacientes"
+                    class="btn btn-secondary">
+                    Cancelar
+                </a>
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Guardar paciente
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

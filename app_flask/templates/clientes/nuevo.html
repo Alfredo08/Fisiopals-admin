@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+{% block titulo %}
+Nuevo Cliente y Paciente
+{% endblock %}
+{% block contenido %}
+<!-- Encabezado -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title">Nuevo cliente</h1>
+        <p class="page-description">Registra al cliente y a su paciente en un solo formulario.</p>
+    </div>
+    <a
+        href="/clientes"
+        class="btn btn-secondary">
+        Volver
+    </a>
+</div>
+<form action="/clientes/crear" method="POST">
+    <!-- Datos del cliente -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Datos del cliente
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label
+                    for="nombre"
+                    class="form-label">
+                    Nombre completo
+                </label>
+                <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    class="form-control"
+                    value="{{ request.form.get('nombre', '') }}"
+                    autocomplete="name"
+                    required>
+                {% with mensajes = get_flashed_messages(
+                    category_filter=['error_nombre']
+                ) %}
+                    {% for mensaje in mensajes %}
+                        <small class="text-danger d-block mt-1">
+                            {{ mensaje }}
+                        </small>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="correo"
+                        class="form-label">
+                        Correo
+                    </label>
+                    <input
+                        type="email"
+                        id="correo"
+                        name="correo"
+                        class="form-control"
+                        value="{{ request.form.get('correo', '') }}"
+                        autocomplete="email"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_correo']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="telefono"
+                        class="form-label">
+                        Teléfono
+                    </label>
+                    <input
+                        type="text"
+                        id="telefono"
+                        name="telefono"
+                        class="form-control"
+                        value="{{ request.form.get('telefono', '') }}"
+                        autocomplete="tel"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_telefono']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Datos del paciente -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Datos del paciente
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="nombre_paciente"
+                        class="form-label">
+                        Nombre del paciente
+                    </label>
+                    <input
+                        type="text"
+                        id="nombre_paciente"
+                        name="nombre_paciente"
+                        class="form-control"
+                        value="{{ request.form.get('nombre_paciente', '') }}"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_nombre_paciente']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label
+                        for="especie"
+                        class="form-label">
+                        Especie
+                    </label>
+                    <select
+                        id="especie"
+                        name="especie"
+                        class="form-select"
+                        required>
+                        <option value="">
+                            Selecciona una especie
+                        </option>
+                        <option
+                            value="Canino"
+                            {% if request.form.get('especie') == 'Canino' %}
+                                selected
+                            {% endif %}>
+                            Canino
+                        </option>
+                        <option
+                            value="Felino"
+                            {% if request.form.get('especie') == 'Felino' %}
+                                selected
+                            {% endif %}>
+                            Felino
+                        </option>
+                        <option
+                            value="Equino"
+                            {% if request.form.get('especie') == 'Equino' %}
+                                selected
+                            {% endif %}>
+                            Equino
+                        </option>
+                        <option
+                            value="No convencional"
+                            {% if request.form.get('especie') == 'No convencional' %}
+                                selected
+                            {% endif %}>
+                            No convencional
+                        </option>
+                    </select>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_especie']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label
+                        for="raza"
+                        class="form-label">
+                        Raza
+                    </label>
+                    <input
+                        type="text"
+                        id="raza"
+                        name="raza"
+                        class="form-control"
+                        value="{{ request.form.get('raza', '') }}"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_raza']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label
+                        for="edad"
+                        class="form-label">
+                        Edad
+                    </label>
+                    <input
+                        type="number"
+                        id="edad"
+                        name="edad"
+                        class="form-control"
+                        min="0"
+                        value="{{ request.form.get('edad', '') }}"
+                        required>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_edad']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label
+                        for="sexo"
+                        class="form-label">
+                        Sexo
+                    </label>
+                    <select
+                        id="sexo"
+                        name="sexo"
+                        class="form-select"
+                        required>
+                        <option value="">
+                            Selecciona una opción
+                        </option>
+                        <option value="Macho"
+                            {% if request.form.get('sexo') == 'Macho' %}selected{% endif %}>
+                            Macho
+                        </option>
+
+                        <option value="Macho castrado"
+                            {% if request.form.get('sexo') == 'Macho castrado' %}selected{% endif %}>
+                            Macho castrado
+                        </option>
+
+                        <option value="Hembra"
+                            {% if request.form.get('sexo') == 'Hembra' %}selected{% endif %}>
+                            Hembra
+                        </option>
+
+                        <option value="Hembra castrada"
+                            {% if request.form.get('sexo') == 'Hembra castrada' %}selected{% endif %}>
+                            Hembra castrada
+                        </option>
+                    </select>
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_sexo']
+                    ) %}
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label
+                    for="inicio_problema"
+                    class="form-label">
+                    Inicio del problema
+                </label>
+                <input
+                    type="datetime-local"
+                    id="inicio_problema"
+                    name="inicio_problema"
+                    class="form-control"
+                    value="{{ request.form.get('inicio_problema', '') }}">
+            </div>
+            <div class="mb-3">
+                <label
+                    for="historia_clinica"
+                    class="form-label">
+                    Historia clínica
+                </label>
+                <textarea
+                    id="historia_clinica"
+                    name="historia_clinica"
+                    class="form-control"
+                    rows="4">{{ request.form.get('historia_clinica', '') }}</textarea>
+                {% with mensajes = get_flashed_messages(
+                    category_filter=['error_historia_clinica']
+                ) %}
+                    {% for mensaje in mensajes %}
+                        <small class="text-danger d-block mt-1">
+                            {{ mensaje }}
+                        </small>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+            <div class="mb-3">
+                <label
+                    for="diagnostico_vet"
+                    class="form-label">
+                    Diagnóstico veterinario
+                </label>
+                <textarea
+                    id="diagnostico_vet"
+                    name="diagnostico_vet"
+                    class="form-control"
+                    rows="4">{{ request.form.get('diagnostico_vet', '') }}</textarea>
+                {% with mensajes = get_flashed_messages(
+                    category_filter=['error_diagnostico_vet']
+                ) %}
+                    {% for mensaje in mensajes %}
+                        <small class="text-danger d-block mt-1">
+                            {{ mensaje }}
+                        </small>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    <!-- Acciones -->
+    <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+        <a
+            href="/clientes"
+            class="btn btn-secondary">
+            Cancelar
+        </a>
+        <button
+            type="submit"
+            class="btn btn-primary">
+            Crear cliente y paciente
+        </button>
+    </div>
+</form>
+{% endblock %}

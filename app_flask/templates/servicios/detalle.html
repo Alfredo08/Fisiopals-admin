@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  {{ servicio.nombre }}
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">{{ servicio.nombre }}</h1>
+      <p class="page-description">Consulta la descripción, el precio y la información de registro del servicio.</p>
+    </div>
+    <div class="d-flex flex-column flex-sm-row gap-2">
+      <a href="/servicios" class="btn btn-secondary">Volver</a>
+
+      <a href="/servicios/{{ servicio.id_servicio }}/editar" class="btn btn-primary">Editar servicio</a>
+    </div>
+  </div>
+  <!-- Información del servicio -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Información del servicio</div>
+    <div class="card-body">
+      <div class="mb-4">
+        <p class="text-soft mb-1">Descripción</p>
+        <p class="mb-0">{{ servicio.descripcion }}</p>
+      </div>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Precio</p>
+          <p class="fw-semibold fs-5 mb-0">${{ '%.2f'|format(servicio.precio) }}</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Fecha de creación</p>
+          <p class="fw-semibold mb-0">{{ servicio.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}</p>
+        </div>
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Última actualización</p>
+          <p class="fw-semibold mb-0">{{ servicio.fecha_actualizacion.strftime('%d/%m/%Y %H:%M') }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

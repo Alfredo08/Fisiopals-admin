@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% block titulo %}
+Nueva Orden
+{% endblock %}
+{% block contenido %}
+<!-- Encabezado -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="page-title">
+            Nueva orden
+        </h1>
+        <p class="page-description">
+            Selecciona al paciente o registra un comprador ocasional y agrega los servicios y productos de la venta.
+        </p>
+    </div>
+    <a
+        href="/ordenes"
+        class="btn btn-secondary">
+        Volver
+    </a>
+</div>
+<form action="/ordenes/crear" method="POST">
+    <!-- Datos generales -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Datos de la orden
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-7 mb-3">
+                    <label
+                        for="id_paciente"
+                        class="form-label">
+                        Paciente
+                    </label>
+                    <select
+                        id="id_paciente"
+                        name="id_paciente"
+                        class="form-select">
+                        <option value="">
+                            Sin paciente / comprador ocasional
+                        </option>
+                        {% for paciente in pacientes %}
+                            <option
+                                value="{{ paciente.id_paciente }}"
+                                {% if request.form.get('id_paciente')|string == paciente.id_paciente|string %}
+                                    selected
+                                {% endif %}>
+                                {{ paciente.nombre }}
+                                ({{ paciente.especie }})
+                                -
+                                {{ paciente.cliente.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-soft">
+                        Selecciona un paciente registrado. Si es una venta general, deja esta opción vacía.
+                    </small>
+                </div>
+                <div class="col-lg-5 mb-3">
+                    <label
+                        for="nombre_comprador"
+                        class="form-label">
+                        Comprador ocasional
+                    </label>
+                    <input
+                        type="text"
+                        id="nombre_comprador"
+                        name="nombre_comprador"
+                        class="form-control"
+                        placeholder="Nombre del comprador"
+                        value="{{ request.form.get('nombre_comprador', '') }}">
+                    <small class="text-soft">
+                        Completa este campo únicamente cuando no selecciones un paciente.
+                    </small>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <label class="form-label">
+                        Estado inicial
+                    </label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="Pendiente"
+                        disabled>
+                    <small class="text-soft">
+                        Todas las órdenes nuevas se crean como pendientes.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Servicios -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header">
+            Servicios
+        </div>
+        <div class="card-body p-0">
+            {% if servicios|length == 0 %}
+                <div class="text-center py-5">
+                    <h5>
+                        No hay servicios disponibles
+                    </h5>
+                    <p class="text-soft mb-0">
+                        Registra servicios antes de crear una orden.
+                    </p>
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th style="width: 150px;">
+                                    Cantidad
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for servicio in servicios %}
+                            <tr>
+                                <td class="fw-semibold">
+                                    {{ servicio.nombre }}
+                                </td>
+                                <td>
+                                    {{ servicio.descripcion }}
+                                </td>
+                                <td class="text-nowrap">
+                                    ${{ "%.2f"|format(servicio.precio) }}
+                                </td>
+                                <td>
+                                    <input
+                                        type="hidden"
+                                        name="id_servicio"
+                                        value="{{ servicio.id_servicio }}">
+                                    <input
+                                        type="number"
+                                        name="cantidad_servicio"
+                                        class="form-control"
+                                        min="0"
+                                        value="0">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Productos -->
+    <div class="card shadow-soft overflow-hidden mb-4">
+        <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <span>
+                Productos
+            </span>
+            <div class="product-search-wrapper">
+                <input
+                    type="search"
+                    id="buscarProducto"
+                    class="form-control form-control-sm"
+                    placeholder="Buscar producto..."
+                    autocomplete="off">
+            </div>
+        </div>
+        <div class="card-body p-0">
+            {% if productos|length == 0 %}
+                <div class="text-center py-5">
+                    <h5>
+                        No hay productos disponibles
+                    </h5>
+                    <p class="text-soft mb-0">
+                        El inventario no contiene productos registrados.
+                    </p>
+                </div>
+            {% else %}
+                <div
+                    id="mensajeSinProductos"
+                    class="text-center py-5 d-none">
+                    <h5>
+                        No se encontraron productos
+                    </h5>
+                    <p class="text-soft mb-0">
+                        Intenta buscar usando otro nombre.
+                    </p>
+                </div>
+                <div class="table-responsive">
+                    <table
+                        id="tablaProductosOrden"
+                        class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Stock disponible</th>
+                                <th>Estado</th>
+                                <th style="width: 150px;">
+                                    Cantidad
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos %}
+                            <tr
+                                class="fila-producto"
+                                data-producto="{{ producto.nombre|lower }}">
+                                <td class="fw-semibold">
+                                    {{ producto.nombre }}
+                                </td>
+                                <td class="text-nowrap">
+                                    ${{ "%.2f"|format(producto.precio) }}
+                                </td>
+                                <td class="fw-semibold">
+                                    {{ producto.stock }}
+                                </td>
+                                <td>
+                                    {% if producto.stock == 0 %}
+                                        <span class="badge badge-stock-agotado">
+                                            Sin stock
+                                        </span>
+                                    {% elif producto.stock <= 5 %}
+                                        <span class="badge badge-stock-bajo">
+                                            Stock bajo
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-stock-disponible">
+                                            Disponible
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <input
+                                        type="hidden"
+                                        name="id_producto"
+                                        value="{{ producto.id_producto }}">
+                                    <input
+                                        type="number"
+                                        name="cantidad_producto"
+                                        class="form-control cantidad-producto"
+                                        min="0"
+                                        max="{{ producto.stock }}"
+                                        value="0"
+                                        {% if producto.stock == 0 %}
+                                            readonly
+                                        {% endif %}>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <!-- Acciones -->
+    <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+        <a
+            href="/ordenes"
+            class="btn btn-secondary">
+            Cancelar
+        </a>
+        <button
+            type="submit"
+            class="btn btn-primary">
+            Crear orden
+        </button>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buscador = document.getElementById('buscarProducto');
+    const filas = document.querySelectorAll('.fila-producto');
+    const mensajeSinProductos = document.getElementById(
+        'mensajeSinProductos'
+    );
+
+    if (!buscador) {
+        return;
+    }
+
+    buscador.addEventListener('input', function () {
+        const textoBusqueda = buscador.value
+            .toLowerCase()
+            .trim();
+
+        let coincidencias = 0;
+
+        filas.forEach(function (fila) {
+            const nombreProducto = fila.dataset.producto || '';
+
+            const coincide = nombreProducto.includes(
+                textoBusqueda
+            );
+
+            fila.classList.toggle('d-none', !coincide);
+
+            if (coincide) {
+                coincidencias += 1;
+            }
+        });
+
+        if (mensajeSinProductos) {
+            mensajeSinProductos.classList.toggle(
+                'd-none',
+                coincidencias > 0
+            );
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,793 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+Orden #{{ orden.id_orden }}
+{% endblock %}
+
+{% block contenido %}
+
+<!-- Encabezado -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+    <div>
+        <h1 class="page-title">
+            Orden #{{ orden.id_orden }}
+        </h1>
+
+        <p class="page-description">
+            Creada el {{ orden.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}
+        </p>
+    </div>
+
+    <a
+        href="/ordenes"
+        class="btn btn-secondary">
+        Volver a órdenes
+    </a>
+
+</div>
+
+
+<!-- Información general -->
+<div class="card shadow-soft overflow-hidden mb-4">
+
+    <div class="card-header">
+        Información de la orden
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-lg-6 mb-3">
+
+                {% if orden.paciente %}
+
+                    <p class="text-soft mb-1">
+                        Cliente
+                    </p>
+
+                    <p class="mb-3">
+                        {% if orden.paciente.cliente %}
+                            <a
+                                href="/clientes/{{ orden.paciente.cliente.id_cliente }}"
+                                class="app-link">
+                                {{ orden.paciente.cliente.nombre }}
+                            </a>
+                        {% else %}
+                            No disponible
+                        {% endif %}
+                    </p>
+
+                    <p class="text-soft mb-1">
+                        Paciente
+                    </p>
+
+                    <p class="mb-3">
+                        <a
+                            href="/pacientes/{{ orden.paciente.id_paciente }}"
+                            class="app-link">
+                            {{ orden.paciente.codigo_paciente() }}
+                            -
+                            {{ orden.paciente.nombre }}
+                        </a>
+                    </p>
+
+                    <p class="text-soft mb-1">
+                        Especie
+                    </p>
+
+                    <p class="fw-semibold mb-0">
+                        {{ orden.paciente.especie }}
+                    </p>
+
+                {% elif orden.nombre_comprador %}
+
+                    <p class="text-soft mb-1">
+                        Comprador ocasional
+                    </p>
+
+                    <p class="fw-semibold mb-2">
+                        {{ orden.nombre_comprador }}
+                    </p>
+
+                    <p class="text-soft mb-0">
+                        Esta orden no está asociada a un cliente registrado.
+                    </p>
+
+                {% else %}
+
+                    <p class="text-soft mb-0">
+                        No se encontró información del comprador.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+            <div class="col-lg-6 mb-3">
+
+                <p class="text-soft mb-1">
+                    Estado de la orden
+                </p>
+
+                <div class="mb-3">
+
+                    {% if orden.estado == 'pendiente' %}
+
+                        <span class="badge badge-pendiente">
+                            Pendiente
+                        </span>
+
+                    {% elif orden.estado == 'pagada' %}
+
+                        <span class="badge badge-pagada">
+                            Pagada
+                        </span>
+
+                    {% elif orden.estado == 'cancelada' %}
+
+                        <span class="badge badge-cancelada">
+                            Cancelada
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <p class="text-soft mb-1">
+                    Total
+                </p>
+
+                <p class="fs-4 fw-bold mb-3">
+                    ${{ "%.2f"|format(orden.total) }}
+                </p>
+
+                <p class="text-soft mb-1">
+                    Última actualización
+                </p>
+
+                <p class="fw-semibold mb-0">
+                    {{ orden.fecha_actualizacion.strftime('%d/%m/%Y %H:%M') }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        {% if orden.estado_pago == 'pagada' %}
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Estado de la orden
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="Pagada"
+                        disabled>
+
+                    <small class="text-soft">
+                        Esta orden fue pagada completamente y su estado quedó bloqueado.
+                    </small>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <form
+                action="/ordenes/{{ orden.id_orden }}/estado"
+                method="POST">
+
+                <div class="row align-items-end">
+
+                    <div class="col-md-5 mb-3">
+
+                        <label
+                            for="estado"
+                            class="form-label">
+                            Estado de la orden
+                        </label>
+
+                        <select
+                            id="estado"
+                            name="estado"
+                            class="form-select">
+
+                            <option
+                                value="pendiente"
+                                {% if orden.estado == 'pendiente' %}
+                                    selected
+                                {% endif %}>
+                                Pendiente
+                            </option>
+
+                            <option
+                                value="cancelada"
+                                {% if orden.estado == 'cancelada' %}
+                                    selected
+                                {% endif %}>
+                                Cancelada
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+                            Actualizar estado
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- Estado de cuenta -->
+<div class="card shadow-soft overflow-hidden mb-4">
+
+    <div class="card-header">
+        Estado de cuenta
+    </div>
+
+    <div class="card-body">
+
+        <div class="row g-4">
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="financial-summary">
+
+                    <p class="text-soft mb-1">
+                        Total de la orden
+                    </p>
+
+                    <p class="fs-4 fw-bold mb-0">
+                        ${{ "%.2f"|format(orden.total) }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="financial-summary">
+
+                    <p class="text-soft mb-1">
+                        Saldo aplicado
+                    </p>
+
+                    <p class="fs-4 fw-bold mb-0">
+                        ${{ "%.2f"|format(orden.saldo_aplicado) }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="financial-summary">
+
+                    <p class="text-soft mb-1">
+                        Abonos realizados
+                    </p>
+
+                    <p class="fs-4 fw-bold mb-0">
+                        ${{ "%.2f"|format(orden.monto_pagado) }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="financial-summary">
+
+                    <p class="text-soft mb-1">
+                        Saldo pendiente
+                    </p>
+
+                    <p class="fs-4 fw-bold mb-0">
+                        ${{ "%.2f"|format(orden.saldo_pendiente()) }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+                <p class="text-soft mb-1">
+                    Estado del pago
+                </p>
+
+                {% if orden.estado_pago == 'pagada' %}
+
+                    <span class="badge badge-pagada">
+                        Pagada
+                    </span>
+
+                {% elif orden.estado_pago == 'parcial' %}
+
+                    <span class="badge badge-pendiente">
+                        Pago parcial
+                    </span>
+
+                {% else %}
+
+                    <span class="badge badge-cancelada">
+                        Pendiente de pago
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            {% if orden.paciente and orden.paciente.cliente %}
+
+                <div class="col-md-6 mb-3">
+
+                    <p class="text-soft mb-1">
+                        Saldo actual del cliente
+                    </p>
+
+                    {% if orden.paciente.cliente.saldo > 0 %}
+
+                        <span class="saldo-positivo">
+                            ${{ "%.2f"|format(orden.paciente.cliente.saldo) }}
+                            a favor
+                        </span>
+
+                    {% elif orden.paciente.cliente.saldo < 0 %}
+
+                        <span class="saldo-negativo">
+                            ${{ "%.2f"|format(orden.paciente.cliente.saldo|abs) }}
+                            en contra
+                        </span>
+
+                    {% else %}
+
+                        <span class="fw-semibold">
+                            $0.00
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Registrar abono -->
+{% if orden.saldo_pendiente() > 0 and orden.estado != 'cancelada' %}
+
+<div class="card shadow-soft overflow-hidden mb-4">
+
+    <div class="card-header">
+        Registrar abono
+    </div>
+
+    <div class="card-body">
+
+        {% with mensajes = get_flashed_messages(
+            category_filter=['error_abono', 'error_metodo_pago']
+        ) %}
+
+            {% for mensaje in mensajes %}
+
+                <div class="alert alert-danger">
+                    {{ mensaje }}
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+        <form
+            action="/ordenes/{{ orden.id_orden }}/abonar"
+            method="POST">
+
+            <div class="row align-items-end">
+
+                <!-- Monto -->
+                <div class="col-lg-5 d-flex flex-column">
+
+                    <label
+                        for="monto"
+                        class="form-label">
+                        Monto del abono
+                    </label>
+
+                    <div class="input-group">
+
+                        <span class="input-group-text">
+                            $
+                        </span>
+
+                        <input
+                            type="number"
+                            id="monto"
+                            name="monto"
+                            class="form-control"
+                            min="0.01"
+                            max="{{ orden.saldo_pendiente() }}"
+                            step="0.01"
+                            placeholder="0.00"
+                            required>
+
+                    </div>
+
+                    <small class="text-soft mt-2">
+                        Máximo:
+                        ${{ "%.2f"|format(orden.saldo_pendiente()) }}
+                    </small>
+
+                </div>
+
+
+                <!-- Método -->
+                <div class="col-lg-4 d-flex flex-column">
+
+                    <label
+                        for="metodo_pago"
+                        class="form-label">
+                        Método de pago
+                    </label>
+
+                    <select
+                        id="metodo_pago"
+                        name="metodo_pago"
+                        class="form-select"
+                        required>
+
+                        <option value="">
+                            Selecciona una opción
+                        </option>
+
+                        <option value="efectivo">
+                            Efectivo
+                        </option>
+
+                        <option value="trasnferencia">
+                            Transferencia
+                        </option>
+
+                    </select>
+
+                    <!-- Espaciador -->
+                    <small class="invisible mt-2">
+                        Máximo: $0.00
+                    </small>
+
+                </div>
+
+
+                <!-- Botón -->
+                <div class="col-lg-3 d-flex flex-column">
+
+                    <!-- Espaciador del label -->
+                    <label class="form-label invisible">
+                        Acción
+                    </label>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+                        Registrar abono
+                    </button>
+
+                    <!-- Espaciador inferior -->
+                    <small class="invisible mt-2">
+                        Máximo: $0.00
+                    </small>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% elif orden.estado_pago == 'pagada' %}
+
+<div class="alert alert-success">
+    Esta orden ya fue pagada en su totalidad.
+</div>
+
+{% elif orden.estado == 'cancelada' %}
+
+<div class="alert alert-danger">
+    No se pueden registrar abonos en una orden cancelada.
+</div>
+
+{% endif %}
+
+
+<!-- Historial de pagos -->
+<div class="card shadow-soft overflow-hidden mb-4">
+
+    <div class="card-header">
+        Historial de pagos
+    </div>
+
+    <div class="card-body p-0">
+
+        {% if pagos|length == 0 %}
+
+            <div class="text-center py-5">
+
+                <h5>
+                    Sin pagos registrados
+                </h5>
+
+                <p class="text-soft mb-0">
+                    Aún no hay abonos registrados para esta orden.
+                </p>
+
+            </div>
+
+        {% else %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Método de pago</th>
+                            <th>Monto</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for pago in pagos %}
+
+                        <tr>
+
+                            <td class="text-nowrap">
+                                {{ pago.fecha_pago.strftime('%d/%m/%Y %H:%M') }}
+                            </td>
+
+                            <td>
+
+                                {% if pago.metodo_pago == 'efectivo' %}
+
+                                    <span class="badge badge-metodo-efectivo">
+                                        Efectivo
+                                    </span>
+
+                                {% elif pago.metodo_pago == 'transferencia' %}
+
+                                    <span class="badge badge-metodo-transferencia">
+                                        Transferencia
+                                    </span>
+
+                                {% else %}
+
+                                    {{ pago.metodo_pago|capitalize }}
+
+                                {% endif %}
+
+                            </td>
+
+                            <td class="fw-semibold text-nowrap">
+                                ${{ "%.2f"|format(pago.monto) }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- Servicios -->
+<div class="card shadow-soft overflow-hidden mb-4">
+
+    <div class="card-header">
+        Servicios
+    </div>
+
+    <div class="card-body p-0">
+
+        {% if servicios|length == 0 %}
+
+            <div class="text-center py-5">
+
+                <h5>
+                    Sin servicios registrados
+                </h5>
+
+                <p class="text-soft mb-0">
+                    Esta orden no tiene servicios registrados.
+                </p>
+
+            </div>
+
+        {% else %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+
+                        <tr>
+                            <th>Servicio</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in servicios %}
+
+                        <tr>
+
+                            <td class="fw-semibold">
+                                {{ item.servicio.nombre }}
+                            </td>
+
+                            <td>
+                                {{ item.cantidad }}
+                            </td>
+
+                            <td class="text-nowrap">
+                                ${{ "%.2f"|format(item.precio_unitario) }}
+                            </td>
+
+                            <td class="fw-semibold text-nowrap">
+                                ${{ "%.2f"|format(item.subtotal) }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- Productos -->
+<div class="card shadow-soft overflow-hidden mb-4">
+
+    <div class="card-header">
+        Productos
+    </div>
+
+    <div class="card-body p-0">
+
+        {% if productos|length == 0 %}
+
+            <div class="text-center py-5">
+
+                <h5>
+                    Sin productos registrados
+                </h5>
+
+                <p class="text-soft mb-0">
+                    Esta orden no tiene productos registrados.
+                </p>
+
+            </div>
+
+        {% else %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead>
+
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in productos %}
+
+                        <tr>
+
+                            <td class="fw-semibold">
+                                {{ item.producto.nombre }}
+                            </td>
+
+                            <td>
+                                {{ item.cantidad }}
+                            </td>
+
+                            <td class="text-nowrap">
+                                ${{ "%.2f"|format(item.precio_unitario) }}
+                            </td>
+
+                            <td class="fw-semibold text-nowrap">
+                                ${{ "%.2f"|format(item.subtotal) }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

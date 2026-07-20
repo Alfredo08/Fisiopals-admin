@@ -1,0 +1,541 @@
+/* ==========================================
+   PALETA DE COLORES
+========================================== */
+
+:root {
+    --rosa-principal: #F0DECE;
+    --lila-principal: #C8C5E2;
+
+    --rosa-hover: #e8d2c1;
+    --lila-hover: #b7b3da;
+
+    --fondo: #f7f4f1;
+    --blanco: #ffffff;
+
+    --texto-principal: #4b4b4b;
+    --texto-secundario: #777777;
+
+    --success: #8ab38a;
+    --danger: #d28b8b;
+    --warning: #d8bf8b;
+
+    --sombra: rgba(0, 0, 0, .08);
+}
+
+
+/* ==========================================
+   GENERAL
+========================================== */
+
+body {
+    background-color: var(--fondo);
+    color: var(--texto-principal);
+    font-family: "Segoe UI", sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* ==========================================
+   NAVBAR PRINCIPAL
+========================================== */
+
+.app-navbar {
+    background-color: var(--lila-principal);
+    box-shadow: 0 3px 14px var(--sombra);
+    padding-top: .65rem;
+    padding-bottom: .65rem;
+}
+
+.navbar-brand {
+    color: var(--texto-principal) !important;
+    font-weight: 700;
+    letter-spacing: .01rem;
+}
+
+.navbar-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background-color: var(--blanco);
+    padding: 2px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}
+
+.app-navbar .nav-link {
+    position: relative;
+    color: var(--texto-principal) !important;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: .55rem .75rem !important;
+    transition:
+        background-color .2s ease,
+        color .2s ease;
+}
+
+.app-navbar .nav-link:hover {
+    background-color: rgba(255, 255, 255, .32);
+}
+
+.app-navbar .nav-link.active {
+    background-color: var(--rosa-principal);
+    color: var(--texto-principal) !important;
+}
+
+.admin-name {
+    color: var(--texto-principal);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.navbar-toggler {
+    border-color: rgba(75, 75, 75, .25);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 .2rem rgba(240, 222, 206, .55);
+}
+
+
+/* ==========================================
+   CARDS
+========================================== */
+
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px var(--sombra);
+}
+
+.card-header {
+    background-color: var(--rosa-principal);
+    border: none;
+    font-weight: 600;
+}
+
+.card-dashboard {
+    transition: .2s;
+}
+
+.card-dashboard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .10);
+}
+
+
+/* ==========================================
+   BOTONES
+========================================== */
+
+.btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: .6rem 1rem;
+    transition:
+        background-color .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background-color: var(--lila-principal);
+    border-color: var(--lila-principal);
+    color: var(--texto-principal);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--lila-hover);
+    border-color: var(--lila-hover);
+    color: var(--texto-principal);
+}
+
+.btn-secondary {
+    background-color: var(--rosa-principal);
+    border-color: var(--rosa-principal);
+    color: var(--texto-principal);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: var(--rosa-hover);
+    border-color: var(--rosa-hover);
+    color: var(--texto-principal);
+}
+
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: var(--texto-principal);
+}
+
+.btn-success:hover,
+.btn-success:focus {
+    background-color: #789f78;
+    border-color: #789f78;
+    color: var(--blanco);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: var(--texto-principal);
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+    background-color: #bf7777;
+    border-color: #bf7777;
+    color: var(--blanco);
+}
+
+.btn-outline-custom {
+    color: var(--texto-principal);
+    border: 1px solid var(--lila-principal);
+    background-color: transparent;
+}
+
+.btn-outline-custom:hover,
+.btn-outline-custom:focus {
+    color: var(--texto-principal);
+    border-color: var(--lila-hover);
+    background-color: var(--lila-principal);
+}
+
+.btn-sm {
+    border-radius: 9px;
+    padding: .4rem .75rem;
+}
+
+
+/* ==========================================
+   TABLAS
+========================================== */
+
+.table {
+    margin-bottom: 0;
+    background-color: var(--blanco);
+}
+
+.table thead {
+    background-color: var(--lila-principal);
+}
+
+.table th {
+    color: var(--texto-principal);
+    border: none;
+    font-weight: 700;
+    padding: 1rem;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: .9rem 1rem;
+}
+
+.table-hover tbody tr {
+    transition: background-color .2s ease;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(200, 197, 226, .15);
+}
+
+.table-responsive {
+    border-radius: 0 0 20px 20px;
+}
+
+
+/* ==========================================
+   FORMULARIOS
+========================================== */
+
+.form-control,
+.form-select {
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    padding: .7rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--lila-principal);
+    box-shadow: 0 0 0 .25rem rgba(200, 197, 226, .25);
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: .4rem;
+}
+
+
+/* ==========================================
+   ALERTAS
+========================================== */
+
+.alert {
+    border: none;
+    border-radius: 12px;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+}
+
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.login-header {
+    background: linear-gradient(135deg,
+            var(--lila-principal),
+            var(--rosa-principal));
+    padding: 2rem;
+    text-align: center;
+}
+
+.login-title {
+    margin: 0;
+    color: var(--texto-principal);
+    font-weight: 700;
+}
+
+.login-body {
+    padding: 2rem;
+    background-color: var(--blanco);
+}
+
+.login-logo {
+    width: 250px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto 1.5rem auto;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .10);
+}
+
+@media (max-width: 576px) {
+
+    .login-header,
+    .login-body {
+        padding: 1.5rem;
+    }
+
+    .login-logo {
+        width: 115px;
+    }
+}
+
+
+/* ==========================================
+   DASHBOARD
+========================================== */
+
+.card-dashboard {
+    border-left: 8px solid var(--lila-principal);
+    transition: all .25s ease;
+    cursor: pointer;
+}
+
+.card-dashboard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .12);
+    border-left-color: var(--rosa-principal);
+}
+
+.card-dashboard h4 {
+    font-weight: 700;
+}
+
+.card-dashboard p {
+    color: var(--texto-secundario);
+}
+
+
+/* ==========================================
+   BADGES
+========================================== */
+
+.badge-pendiente {
+    background-color: var(--warning);
+    color: black;
+}
+
+.badge-pagada {
+    background-color: var(--success);
+}
+
+.badge-cancelada {
+    background-color: var(--danger);
+}
+
+
+/* ==========================================
+   UTILIDADES
+========================================== */
+
+.bg-rosa {
+    background-color: var(--rosa-principal);
+}
+
+.bg-lila {
+    background-color: var(--lila-principal);
+}
+
+.text-soft {
+    color: var(--texto-secundario);
+}
+
+.shadow-soft {
+    box-shadow: 0 4px 15px var(--sombra);
+}
+
+/* ==========================================
+   TÍTULOS DE PÁGINA
+========================================== */
+.page-title {
+    font-weight: 700;
+    margin-bottom: .25rem;
+}
+
+.page-description {
+    color: var(--texto-secundario);
+    margin-bottom: 0;
+}
+
+/* ==========================================
+   LOGO, ENLACES Y BOTONES PERSONALIZADOS
+========================================== */
+
+.app-link {
+    color: var(--texto-principal);
+    font-weight: 700;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+.app-link:hover {
+    color: var(--lila-hover);
+    text-decoration: underline;
+}
+
+.btn-outline-custom {
+    color: var(--texto-principal);
+    border: 1px solid var(--rosa-hover);
+    background-color: var(--rosa-principal);
+}
+
+.btn-outline-custom:hover {
+    color: var(--texto-principal);
+    border-color: var(--rosa-hover);
+    background-color: var(--rosa-hover);
+}
+
+.saldo-positivo {
+    color: var(--success);
+    font-weight: 700;
+}
+
+.saldo-negativo {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* ==========================================
+   ESTADOS DE INVENTARIO
+========================================== */
+
+.badge-stock-disponible {
+    background-color: var(--success);
+    color: var(--texto-principal);
+}
+
+.badge-stock-bajo {
+    background-color: var(--warning);
+    color: var(--texto-principal);
+}
+
+.badge-stock-agotado {
+    background-color: var(--danger);
+    color: var(--texto-principal);
+}
+
+/* ==========================================
+   INPUT GROUPS
+========================================== */
+
+.input-group-text {
+    background-color: var(--rosa-principal);
+    border: 1px solid #ddd;
+    color: var(--texto-principal);
+    font-weight: 600;
+}
+
+/* ==========================================
+   TEXTO CLÍNICO
+========================================== */
+
+.clinical-text {
+    line-height: 1.7;
+    white-space: pre-line;
+    color: var(--texto-principal);
+}
+
+/* ==========================================
+   MÉTODOS DE PAGO
+========================================== */
+
+.badge-metodo-efectivo {
+    background-color: var(--success);
+    color: var(--texto-principal);
+}
+
+.badge-metodo-transferencia {
+    background-color: var(--lila-principal);
+    color: var(--texto-principal);
+}
+
+/* ==========================================
+   BÚSQUEDA DE PRODUCTOS EN ÓRDENES
+========================================== */
+
+.product-search-wrapper {
+    width: 100%;
+    max-width: 320px;
+}
+
+.product-search-wrapper .form-control {
+    background-color: var(--blanco);
+}
+
+@media (max-width: 767px) {
+    .product-search-wrapper {
+        max-width: none;
+    }
+}

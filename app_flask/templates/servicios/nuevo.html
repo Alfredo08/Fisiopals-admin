@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block titulo %}
+  Nuevo Servicio
+{% endblock %}
+{% block contenido %}
+  <!-- Encabezado -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="page-title">Nuevo servicio</h1>
+      <p class="page-description">Registra un nuevo tratamiento o servicio que podrá agregarse a las órdenes.</p>
+    </div>
+    <a href="/servicios" class="btn btn-secondary">Volver</a>
+  </div>
+  <!-- Formulario -->
+  <div class="card shadow-soft overflow-hidden">
+    <div class="card-header">Información del servicio</div>
+    <div class="card-body">
+      <form action="/servicios/crear" method="POST">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" id="nombre" name="nombre" class="form-control" value="{{ request.form.get('nombre', '') }}" required />
+          {% with mensajes=get_flashed_messages(category_filter=['error_nombre']) %}
+            {% for mensaje in mensajes %}
+              <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+            {% endfor %}
+          {% endwith %}
+        </div>
+        <div class="mb-3">
+          <label for="descripcion" class="form-label">Descripción</label>
+          <textarea id="descripcion" name="descripcion" class="form-control" rows="5" required>{{ request.form.get('descripcion', '') }}</textarea>
+          <small class="text-soft">Describe brevemente el procedimiento o tratamiento que incluye este servicio.</small>
+          {% with mensajes=get_flashed_messages(category_filter=['error_descripcion']) %}
+            {% for mensaje in mensajes %}
+              <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+            {% endfor %}
+          {% endwith %}
+        </div>
+        <div class="mb-4">
+          <label for="precio" class="form-label">Precio</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+
+            <input type="number" id="precio" name="precio" class="form-control" step="0.01" min="0" value="{{ request.form.get('precio', '') }}" required />
+          </div>
+          {% with mensajes=get_flashed_messages(category_filter=['error_precio']) %}
+            {% for mensaje in mensajes %}
+              <small class="text-danger d-block mt-1">{{ mensaje }}</small>
+            {% endfor %}
+          {% endwith %}
+        </div>
+        <!-- Acciones -->
+        <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
+          <a href="/servicios" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Guardar servicio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
