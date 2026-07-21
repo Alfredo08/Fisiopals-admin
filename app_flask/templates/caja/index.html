@@ -78,11 +78,12 @@
             <thead>
               <tr>
                 <th>Hora</th>
+                <th>Tipo</th>
                 <th>Orden</th>
                 <th>Cliente / Comprador</th>
                 <th>Paciente</th>
                 <th>Método</th>
-                <th>Abono</th>
+                <th>Monto</th>
                 <th>Estado del pago</th>
                 <th class="text-center">Acciones</th>
               </tr>
@@ -90,17 +91,35 @@
             <tbody>
               {% for movimiento in movimientos %}
                 <tr>
-                  <td class="text-nowrap">{{ movimiento.fecha_pago.strftime('%H:%M') }}</td>
-                  <td class="text-nowrap">
-                    <a href="/ordenes/{{ movimiento.id_orden }}" class="app-link">Orden #{{ movimiento.id_orden }}</a>
+                  <!-- Hora -->
+                  <td class="text-nowrap">{{ movimiento.fecha_movimiento.strftime('%H:%M') }}</td>
+                  <!-- Tipo de movimiento -->
+                  <td>
+                    {% if movimiento.tipo_movimiento == 'pago_orden' %}
+                      <span class="badge badge-pago-orden">Pago de orden</span>
+                    {% elif movimiento.tipo_movimiento == 'abono_cliente' %}
+                      <span class="badge badge-abono-cliente">Saldo de cliente</span>
+                    {% endif %}
                   </td>
+                  <!-- Orden -->
+                  <td class="text-nowrap">
+                    {% if movimiento.id_orden %}
+                      <a href="/ordenes/{{ movimiento.id_orden }}" class="app-link">Orden #{{ movimiento.id_orden }}</a>
+                    {% else %}
+                      <span class="text-soft">No aplica</span>
+                    {% endif %}
+                  </td>
+                  <!-- Cliente / comprador -->
                   <td>
                     {% if movimiento.id_cliente %}
                       <a href="/clientes/{{ movimiento.id_cliente }}" class="app-link">{{ movimiento.nombre_cliente }}</a>
-                    {% else %}
+                    {% elif movimiento.nombre_comprador %}
                       {{ movimiento.nombre_comprador }}
+                    {% else %}
+                      <span class="text-soft">No disponible</span>
                     {% endif %}
                   </td>
+                  <!-- Paciente -->
                   <td>
                     {% if movimiento.id_paciente %}
                       <a href="/pacientes/{{ movimiento.id_paciente }}" class="app-link">{{ movimiento.nombre_paciente }}</a>
@@ -108,6 +127,7 @@
                       <span class="text-soft">No aplica</span>
                     {% endif %}
                   </td>
+                  <!-- Método de pago -->
                   <td>
                     {% if movimiento.metodo_pago == 'efectivo' %}
                       <span class="badge badge-metodo-efectivo">Efectivo</span>
@@ -115,9 +135,13 @@
                       <span class="badge badge-metodo-transferencia">Transferencia</span>
                     {% endif %}
                   </td>
+                  <!-- Monto -->
                   <td class="fw-bold text-nowrap">${{ '%.2f'|format(movimiento.monto) }}</td>
+                  <!-- Estado -->
                   <td>
-                    {% if movimiento.estado_pago == 'pagada' %}
+                    {% if movimiento.tipo_movimiento == 'abono_cliente' %}
+                      <span class="badge badge-abono-cliente">Saldo a favor</span>
+                    {% elif movimiento.estado_pago == 'pagada' %}
                       <span class="badge badge-pagada">Pagada</span>
                     {% elif movimiento.estado_pago == 'parcial' %}
                       <span class="badge badge-pendiente">Parcial</span>
@@ -125,8 +149,75 @@
                       <span class="badge badge-cancelada">Pendiente</span>
                     {% endif %}
                   </td>
+                  <!-- Acciones -->
                   <td class="text-center text-nowrap">
-                    <a href="/ordenes/{{ movimiento.id_orden }}" class="btn btn-sm btn-outline-custom">Ver orden</a>
+                    {% if movimiento.id_orden %}
+                      <a href="/ordenes/{{ movimiento.id_orden }}" class="btn btn-sm btn-outline-custom">Ver orden</a>
+                    {% elif movimiento.id_cliente %}
+                      <a href="/clientes/{{ movimiento.id_cliente }}" class="btn btn-sm btn-outline-custom">Ver cliente</a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <!-- Aplicaciones de saldo -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+      <span>Aplicaciones de saldo</span>
+      <small class="text-soft">Estos movimientos no se suman al total de Caja.</small>
+    </div>
+    <div class="card-body p-0">
+      {% if aplicaciones_saldo|length == 0 %}
+        <div class="text-center py-5">
+          <h5>No hubo aplicaciones de saldo</h5>
+          <p class="text-soft mb-0">En esta fecha no se utilizaron saldos a favor para cubrir órdenes.</p>
+        </div>
+      {% else %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Hora</th>
+                <th>Orden</th>
+                <th>Cliente</th>
+                <th>Paciente</th>
+                <th>Total de la orden</th>
+                <th>Saldo aplicado</th>
+                <th>Estado del pago</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for aplicacion in aplicaciones_saldo %}
+                <tr>
+                  <td class="text-nowrap">{{ aplicacion.fecha_aplicacion.strftime('%H:%M') }}</td>
+                  <td class="text-nowrap">
+                    <a href="/ordenes/{{ aplicacion.id_orden }}" class="app-link">Orden #{{ aplicacion.id_orden }}</a>
+                  </td>
+                  <td>
+                    <a href="/clientes/{{ aplicacion.id_cliente }}" class="app-link">{{ aplicacion.nombre_cliente }}</a>
+                  </td>
+                  <td>
+                    <a href="/pacientes/{{ aplicacion.id_paciente }}" class="app-link">{{ aplicacion.nombre_paciente }}</a>
+                  </td>
+                  <td class="text-nowrap">${{ '%.2f'|format(aplicacion.total_orden) }}</td>
+                  <td class="fw-bold text-nowrap">${{ '%.2f'|format(aplicacion.saldo_aplicado) }}</td>
+                  <td>
+                    {% if aplicacion.estado_pago == 'pagada' %}
+                      <span class="badge badge-pagada">Pagada</span>
+                    {% elif aplicacion.estado_pago == 'parcial' %}
+                      <span class="badge badge-pendiente">Pago parcial</span>
+                    {% else %}
+                      <span class="badge badge-cancelada">Pendiente</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center text-nowrap">
+                    <a href="/ordenes/{{ aplicacion.id_orden }}" class="btn btn-sm btn-outline-custom">Ver orden</a>
                   </td>
                 </tr>
               {% endfor %}

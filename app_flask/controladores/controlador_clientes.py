@@ -2,6 +2,7 @@ from flask import render_template, redirect, request, session, flash
 from app_flask import app
 from app_flask.modelos.modelo_clientes import Cliente
 from app_flask.modelos.modelo_pacientes import Paciente
+from app_flask.modelos.modelo_abonos_clientes import AbonoCliente
 
 @app.route('/clientes', methods=['GET'])
 def listar_clientes():
@@ -187,20 +188,67 @@ def eliminar_cliente(id_cliente):
 
     return redirect('/clientes')
 
-@app.route('/clientes/<int:id_cliente>/agregar-saldo', methods=['POST'])
+@app.route(
+    '/clientes/<int:id_cliente>/agregar-saldo',
+    methods=['POST']
+)
 def agregar_saldo_cliente(id_cliente):
     if 'id_administrador' not in session:
         return redirect('/')
 
-    monto = float(request.form['monto'])
+    cliente = Cliente.obtener_por_id({
+        'id_cliente': id_cliente
+    })
 
-    if monto <= 0:
-        flash('El monto debe ser mayor a 0.', 'error_saldo')
+    if cliente is None:
+        flash(
+            'El cliente no existe.',
+            'error_cliente'
+        )
+        return redirect('/clientes')
+
+    datos_abono = {
+        'id_cliente': id_cliente,
+        'monto': request.form.get(
+            'monto',
+            ''
+        ).strip(),
+        'metodo_pago': request.form.get(
+            'metodo_pago',
+            ''
+        ).strip()
+    }
+
+    if not AbonoCliente.validar(datos_abono):
         return redirect(f'/clientes/{id_cliente}')
 
-    Cliente.agregar_saldo({
+    resultado_saldo = Cliente.agregar_saldo({
         'id_cliente': id_cliente,
-        'monto': monto
+        'monto': datos_abono['monto']
     })
+
+    if resultado_saldo is False:
+        flash(
+            'No se pudo actualizar el saldo del cliente.',
+            'error_saldo'
+        )
+        return redirect(f'/clientes/{id_cliente}')
+
+    id_abono = AbonoCliente.crear_uno(datos_abono)
+
+    if id_abono is False:
+        flash(
+            (
+                'El saldo se actualizó, pero no se pudo '
+                'registrar el movimiento en Caja.'
+            ),
+            'error_saldo'
+        )
+        return redirect(f'/clientes/{id_cliente}')
+
+    flash(
+        'Saldo agregado correctamente.',
+        'exito'
+    )
 
     return redirect(f'/clientes/{id_cliente}')

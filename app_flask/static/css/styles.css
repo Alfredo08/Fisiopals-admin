@@ -539,3 +539,17 @@ label {
         max-width: none;
     }
 }
+
+/* ==========================================
+   TIPOS DE MOVIMIENTO EN CAJA
+========================================== */
+
+.badge-pago-orden{
+    background-color: var(--lila-principal);
+    color: var(--texto-principal);
+}
+
+.badge-abono-cliente{
+    background-color: var(--rosa-principal);
+    color: var(--texto-principal);
+}
