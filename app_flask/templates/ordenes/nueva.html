@@ -29,20 +29,39 @@ Nueva Orden
             <div class="row">
                 <div class="col-lg-7 mb-3">
                     <label
+                        for="buscarPaciente"
+                        class="form-label">
+                        Buscar paciente o cliente
+                    </label>
+
+                    <input
+                        type="search"
+                        id="buscarPaciente"
+                        class="form-control mb-2"
+                        placeholder="Escribe el nombre del paciente, cliente o especie..."
+                        autocomplete="off">
+
+                    <label
                         for="id_paciente"
                         class="form-label">
                         Paciente
                     </label>
+
                     <select
                         id="id_paciente"
                         name="id_paciente"
                         class="form-select">
-                        <option value="">
+
+                        <option
+                            value=""
+                            data-busqueda="sin paciente comprador ocasional">
                             Sin paciente / comprador ocasional
                         </option>
+
                         {% for paciente in pacientes %}
                             <option
                                 value="{{ paciente.id_paciente }}"
+                                data-busqueda="{{ paciente.nombre|lower }} {{ paciente.especie|lower }} {{ paciente.cliente.nombre|lower }}"
                                 {% if request.form.get('id_paciente')|string == paciente.id_paciente|string %}
                                     selected
                                 {% endif %}>
@@ -52,10 +71,18 @@ Nueva Orden
                                 {{ paciente.cliente.nombre }}
                             </option>
                         {% endfor %}
+
                     </select>
+
                     <small class="text-soft">
-                        Selecciona un paciente registrado. Si es una venta general, deja esta opción vacía.
+                        Puedes buscar por nombre del paciente, nombre del cliente o especie.
                     </small>
+
+                    <div
+                        id="mensajeSinPacientes"
+                        class="text-danger small mt-2 d-none">
+                        No se encontraron pacientes con ese criterio.
+                    </div>
                 </div>
                 <div class="col-lg-5 mb-3">
                     <label
@@ -273,44 +300,121 @@ Nueva Orden
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const buscador = document.getElementById('buscarProducto');
-    const filas = document.querySelectorAll('.fila-producto');
+    // ==========================================
+    // FILTRO DE PACIENTES
+    // ==========================================
+
+    const buscadorPaciente = document.getElementById('buscarPaciente');
+    const selectPaciente = document.getElementById('id_paciente');
+    const mensajeSinPacientes = document.getElementById(
+        'mensajeSinPacientes'
+    );
+
+    if (buscadorPaciente && selectPaciente) {
+        const opcionesPaciente = Array.from(
+            selectPaciente.options
+        );
+
+        buscadorPaciente.addEventListener('input', function () {
+            const textoBusqueda = buscadorPaciente.value
+                .toLowerCase()
+                .trim();
+
+            let coincidencias = 0;
+
+            opcionesPaciente.forEach(function (opcion, indice) {
+                const textoOpcion = (
+                    opcion.dataset.busqueda ||
+                    opcion.textContent
+                )
+                    .toLowerCase()
+                    .trim();
+
+                // La opción de comprador ocasional siempre permanece visible.
+                const coincide = (
+                    indice === 0 ||
+                    textoOpcion.includes(textoBusqueda)
+                );
+
+                opcion.hidden = !coincide;
+
+                if (indice !== 0 && coincide) {
+                    coincidencias += 1;
+                }
+            });
+
+            if (mensajeSinPacientes) {
+                mensajeSinPacientes.classList.toggle(
+                    'd-none',
+                    textoBusqueda === '' || coincidencias > 0
+                );
+            }
+
+            const opcionSeleccionada = selectPaciente.options[
+                selectPaciente.selectedIndex
+            ];
+
+            if (
+                opcionSeleccionada &&
+                opcionSeleccionada.hidden
+            ) {
+                selectPaciente.value = '';
+            }
+        });
+    }
+
+
+    // ==========================================
+    // FILTRO DE PRODUCTOS
+    // ==========================================
+
+    const buscadorProducto = document.getElementById(
+        'buscarProducto'
+    );
+
+    const filasProducto = document.querySelectorAll(
+        '.fila-producto'
+    );
+
     const mensajeSinProductos = document.getElementById(
         'mensajeSinProductos'
     );
 
-    if (!buscador) {
-        return;
-    }
+    if (buscadorProducto) {
+        buscadorProducto.addEventListener('input', function () {
+            const textoBusqueda = buscadorProducto.value
+                .toLowerCase()
+                .trim();
 
-    buscador.addEventListener('input', function () {
-        const textoBusqueda = buscador.value
-            .toLowerCase()
-            .trim();
+            let coincidencias = 0;
 
-        let coincidencias = 0;
+            filasProducto.forEach(function (fila) {
+                const nombreProducto = (
+                    fila.dataset.producto || ''
+                ).toLowerCase();
 
-        filas.forEach(function (fila) {
-            const nombreProducto = fila.dataset.producto || '';
+                const coincide = nombreProducto.includes(
+                    textoBusqueda
+                );
 
-            const coincide = nombreProducto.includes(
-                textoBusqueda
-            );
+                fila.classList.toggle(
+                    'd-none',
+                    !coincide
+                );
 
-            fila.classList.toggle('d-none', !coincide);
+                if (coincide) {
+                    coincidencias += 1;
+                }
+            });
 
-            if (coincide) {
-                coincidencias += 1;
+            if (mensajeSinProductos) {
+                mensajeSinProductos.classList.toggle(
+                    'd-none',
+                    textoBusqueda === '' || coincidencias > 0
+                );
             }
         });
-
-        if (mensajeSinProductos) {
-            mensajeSinProductos.classList.toggle(
-                'd-none',
-                coincidencias > 0
-            );
-        }
-    });
+    }
 });
 </script>
 {% endblock %}

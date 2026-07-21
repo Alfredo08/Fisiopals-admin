@@ -117,7 +117,7 @@ def detalle_paciente(id_paciente):
     if 'id_administrador' not in session:
         return redirect('/')
 
-    paciente = Paciente.obtener_uno_con_datos_clinicos({
+    paciente = Paciente.obtener_uno_completo({
         'id_paciente': id_paciente
     })
 

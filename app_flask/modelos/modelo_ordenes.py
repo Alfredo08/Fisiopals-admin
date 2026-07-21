@@ -376,6 +376,65 @@ class Orden:
 
         return connectToMySQL(BASE_DATOS).query_db(query, datos)
 
+    @classmethod
+    def obtener_todas_filtradas(cls, datos):
+        query = """
+                SELECT
+                    ordenes.*,
+
+                    pacientes.id_paciente AS paciente_id,
+                    pacientes.nombre AS paciente_nombre,
+
+                    clientes.id_cliente AS cliente_id,
+                    clientes.nombre AS cliente_nombre
+
+                FROM ordenes
+
+                LEFT JOIN pacientes
+                    ON ordenes.id_paciente = pacientes.id_paciente
+
+                LEFT JOIN clientes
+                    ON pacientes.id_cliente = clientes.id_cliente
+
+                WHERE (
+                    %(cliente)s = ''
+                    OR clientes.nombre LIKE %(cliente_busqueda)s
+                )
+
+                AND (
+                    %(paciente)s = ''
+                    OR pacientes.nombre LIKE %(paciente_busqueda)s
+                )
+
+                AND (
+                    %(estado)s = ''
+                    OR ordenes.estado = %(estado)s
+                )
+
+                ORDER BY ordenes.fecha_creacion DESC;
+                """
+
+        resultados = connectToMySQL(BASE_DATOS).query_db(
+            query,
+            datos
+        )
+
+        if resultados is False:
+            return []
+
+        ordenes = []
+
+        for fila in resultados:
+            orden = cls(fila)
+
+            orden.id_cliente = fila['cliente_id']
+            orden.cliente_nombre = fila['cliente_nombre']
+            orden.paciente_nombre = fila['paciente_nombre']
+
+            ordenes.append(orden)
+
+        return ordenes
+
     @staticmethod
     def validar(datos):
         es_valido = True

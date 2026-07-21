@@ -18,15 +18,56 @@ from app_flask.modelos.modelo_pagos_orden import PagoOrden
 # =========================================================
 
 @app.route('/ordenes', methods=['GET'])
+@app.route('/ordenes', methods=['GET'])
 def listar_ordenes():
     if 'id_administrador' not in session:
         return redirect('/')
 
-    ordenes = Orden.obtener_todas_con_paciente_cliente()
+    cliente = request.args.get(
+        'cliente',
+        ''
+    ).strip()
+
+    paciente = request.args.get(
+        'paciente',
+        ''
+    ).strip()
+
+    estado = request.args.get(
+        'estado',
+        ''
+    ).strip()
+
+    estados_validos = [
+        '',
+        'pendiente',
+        'pagada',
+        'cancelada'
+    ]
+
+    if estado not in estados_validos:
+        estado = ''
+
+    datos_filtro = {
+        'cliente': cliente,
+        'cliente_busqueda': f'%{cliente}%',
+
+        'paciente': paciente,
+        'paciente_busqueda': f'%{paciente}%',
+
+        'estado': estado
+    }
+
+    ordenes = Orden.obtener_todas_filtradas(
+        datos_filtro
+    )
 
     return render_template(
         'ordenes/index.html',
-        ordenes=ordenes
+        ordenes=ordenes,
+        cliente_filtro=cliente,
+        paciente_filtro=paciente,
+        estado_filtro=estado
     )
 
 

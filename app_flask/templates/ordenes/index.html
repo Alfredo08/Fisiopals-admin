@@ -11,6 +11,108 @@
     </div>
     <a href="/ordenes/nueva" class="btn btn-primary">+ Nueva orden</a>
   </div>
+  <!-- Filtros -->
+  <div class="card shadow-soft overflow-hidden mb-4">
+      <div class="card-header">
+          Filtrar órdenes
+      </div>
+      <div class="card-body">
+          <form
+              action="/ordenes"
+              method="GET">
+              <div class="row align-items-end">
+                  <!-- Cliente -->
+                  <div class="col-md-4 mb-3">
+                      <label
+                          for="cliente"
+                          class="form-label">
+                          Cliente
+                      </label>
+                      <input
+                          type="search"
+                          id="cliente"
+                          name="cliente"
+                          class="form-control"
+                          placeholder="Nombre del cliente"
+                          value="{{ cliente_filtro }}">
+                  </div>
+                  <!-- Paciente -->
+                  <div class="col-md-3 mb-3">
+                      <label
+                          for="paciente"
+                          class="form-label">
+                          Paciente
+                      </label>
+                      <input
+                          type="search"
+                          id="paciente"
+                          name="paciente"
+                          class="form-control"
+                          placeholder="Nombre del paciente"
+                          value="{{ paciente_filtro }}">
+                  </div>
+                  <!-- Estado -->
+                  <div class="col-md-3 mb-3">
+                      <label
+                          for="estado"
+                          class="form-label">
+                          Estado
+                      </label>
+                      <select
+                          id="estado"
+                          name="estado"
+                          class="form-select">
+                          <option
+                              value=""
+                              {% if estado_filtro == '' %}
+                                  selected
+                              {% endif %}>
+                              Todos los estados
+                          </option>
+                          <option
+                              value="pendiente"
+                              {% if estado_filtro == 'pendiente' %}
+                                  selected
+                              {% endif %}>
+                              Pendiente
+                          </option>
+                          <option
+                              value="pagada"
+                              {% if estado_filtro == 'pagada' %}
+                                  selected
+                              {% endif %}>
+                              Pagada
+                          </option>
+                          <option
+                              value="cancelada"
+                              {% if estado_filtro == 'cancelada' %}
+                                  selected
+                              {% endif %}>
+                              Cancelada
+                          </option>
+                      </select>
+                  </div>
+                  <!-- Botón -->
+                  <div class="col-md-2 mb-3 d-grid">
+                      <button
+                          type="submit"
+                          class="btn btn-primary">
+                          Filtrar
+                      </button>
+                  </div>
+              </div>
+              {% if cliente_filtro or paciente_filtro or estado_filtro %}
+                  <div class="d-flex justify-content-end">
+                      <a
+                          href="/ordenes"
+                          class="btn btn-sm btn-secondary">
+                          Limpiar filtros
+                      </a>
+                  </div>
+              {% endif %}
+          </form>
+      </div>
+  </div>
   <!-- Tabla -->
   <div class="card shadow-soft overflow-hidden">
     <div class="card-header">Historial de órdenes</div>
@@ -47,13 +149,6 @@
                       {{ orden.nombre_comprador }}
                     {% else %}
                       <span class="text-soft">No disponible</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if orden.id_paciente %}
-                      <a href="/pacientes/{{ orden.id_paciente }}" class="app-link">{{ orden.paciente_nombre }}</a>
-                    {% else %}
-                      <span class="text-soft">Venta general</span>
                     {% endif %}
                   </td>
                   <td>

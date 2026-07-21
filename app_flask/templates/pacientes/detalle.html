@@ -26,7 +26,11 @@
         <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Cliente</p>
           <p class="mb-0">
-            <a href="/clientes/{{ paciente.cliente.id_cliente }}" class="app-link">{{ paciente.cliente.nombre }}</a>
+            {% if paciente.cliente %}
+              <a href="/clientes/{{ paciente.cliente.id_cliente }}" class="app-link">{{ paciente.cliente.nombre }}</a>
+            {% else %}
+              <span class="text-soft">No disponible</span>
+            {% endif %}
           </p>
         </div>
         <div class="col-md-4 mb-3">

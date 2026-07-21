@@ -31,28 +31,65 @@ Nuevo Paciente
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label
+                        for="buscarCliente"
+                        class="form-label">
+                        Buscar cliente
+                    </label>
+
+                    <input
+                        type="search"
+                        id="buscarCliente"
+                        class="form-control mb-2"
+                        placeholder="Escribe el nombre, correo o teléfono..."
+                        autocomplete="off">
+
+                    <label
                         for="id_cliente"
                         class="form-label">
                         Cliente
                     </label>
+
                     <select
                         id="id_cliente"
                         name="id_cliente"
                         class="form-select"
                         required>
-                        <option value="">
+
+                        <option
+                            value=""
+                            data-busqueda="">
                             Selecciona un cliente
                         </option>
+
                         {% for cliente in clientes %}
                             <option
                                 value="{{ cliente.id_cliente }}"
+                                data-busqueda="{{ cliente.nombre|lower }} {{ cliente.correo|default('', true)|lower }} {{ cliente.telefono|default('', true)|lower }}"
                                 {% if request.form.get('id_cliente')|string == cliente.id_cliente|string %}
                                     selected
                                 {% endif %}>
+
                                 {{ cliente.nombre }}
+
+                                {% if cliente.telefono %}
+                                    - {{ cliente.telefono }}
+                                {% endif %}
+
                             </option>
                         {% endfor %}
+
                     </select>
+
+                    <small class="text-soft">
+                        Puedes buscar por nombre, correo o teléfono.
+                    </small>
+
+                    <div
+                        id="mensajeSinClientes"
+                        class="text-danger small mt-2 d-none">
+                        No se encontraron clientes con ese criterio.
+                    </div>
+
                     {% with mensajes = get_flashed_messages(
                         category_filter=['error_id_cliente']
                     ) %}
@@ -306,4 +343,56 @@ Nuevo Paciente
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buscadorCliente = document.getElementById('buscarCliente');
+    const selectCliente = document.getElementById('id_cliente');
+    const mensajeSinClientes = document.getElementById('mensajeSinClientes');
+
+    if (!buscadorCliente || !selectCliente) {
+        return;
+    }
+
+    const opcionesCliente = Array.from(selectCliente.options);
+
+    buscadorCliente.addEventListener('input', function () {
+        const textoBusqueda = buscadorCliente.value.toLowerCase().trim();
+        let coincidencias = 0;
+
+        opcionesCliente.forEach(function (opcion, indice) {
+            const textoOpcion = (
+                opcion.dataset.busqueda ||
+                opcion.textContent
+            ).toLowerCase().trim();
+
+            const coincide = (
+                indice === 0 ||
+                textoOpcion.includes(textoBusqueda)
+            );
+
+            opcion.hidden = !coincide;
+
+            if (indice !== 0 && coincide) {
+                coincidencias += 1;
+            }
+        });
+
+        if (mensajeSinClientes) {
+            mensajeSinClientes.classList.toggle(
+                'd-none',
+                textoBusqueda === '' || coincidencias > 0
+            );
+        }
+
+        const opcionSeleccionada =
+            selectCliente.options[selectCliente.selectedIndex];
+
+        if (opcionSeleccionada && opcionSeleccionada.hidden) {
+            selectCliente.value = '';
+        }
+    });
+});
+</script>
+
 {% endblock %}
