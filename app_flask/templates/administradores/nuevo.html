@@ -23,9 +23,10 @@
               {% endwith %}
             </div>
             <div class="mb-3">
-              <label for="correo" class="form-label">Correo</label>
-              <input type="email" id="correo" name="correo" class="form-control" value="{{ request.form.get('correo', '') }}" autocomplete="email" required />
-              {% with mensajes=get_flashed_messages(category_filter=['error_correo']) %}
+              <label for="nombre_usuario" class="form-label">Nombre de usuario</label>
+              <input type="text" id="nombre_usuario" name="nombre_usuario" class="form-control" value="{{ request.form.get('nombre_usuario', '') }}" autocomplete="username" minlength="4" required />
+              <small class="text-soft">Puede contener letras, números, puntos, guiones y guiones bajos.</small>
+              {% with mensajes=get_flashed_messages(category_filter=['error_nombre_usuario']) %}
                 {% for mensaje in mensajes %}
                   <small class="text-danger d-block mt-1">{{ mensaje }}</small>
                 {% endfor %}

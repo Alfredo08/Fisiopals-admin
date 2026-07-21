@@ -2,6 +2,9 @@ from flask import render_template, redirect, request, session, flash
 from app_flask import app
 from app_flask.modelos.modelo_pacientes import Paciente
 from app_flask.modelos.modelo_clientes import Cliente
+from app_flask.modelos.modelo_ordenes import Orden
+from app_flask.modelos.modelo_orden_servicios import OrdenServicio
+from app_flask.modelos.modelo_orden_productos import OrdenProducto
 
 @app.route('/pacientes', methods=['GET'])
 def listar_pacientes():
@@ -114,16 +117,39 @@ def detalle_paciente(id_paciente):
     if 'id_administrador' not in session:
         return redirect('/')
 
-    paciente = Paciente.obtener_uno_completo({
+    paciente = Paciente.obtener_uno_con_datos_clinicos({
         'id_paciente': id_paciente
     })
 
     if paciente is None:
+        flash(
+            'El paciente solicitado no existe.',
+            'error_paciente'
+        )
         return redirect('/pacientes')
+
+    ordenes = Orden.obtener_por_paciente({
+        'id_paciente': id_paciente
+    })
+
+    # Cargar los servicios y productos de cada orden.
+    for orden in ordenes:
+        orden.orden_servicios = (
+            OrdenServicio.obtener_por_orden_con_servicio({
+                'id_orden': orden.id_orden
+            })
+        )
+
+        orden.orden_productos = (
+            OrdenProducto.obtener_por_orden_con_producto({
+                'id_orden': orden.id_orden
+            })
+        )
 
     return render_template(
         'pacientes/detalle.html',
-        paciente=paciente
+        paciente=paciente,
+        ordenes=ordenes
     )
 
 @app.route('/pacientes/<int:id_paciente>/editar', methods=['GET'])

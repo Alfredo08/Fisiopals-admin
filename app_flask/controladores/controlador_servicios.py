@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, request, session, flash
 from app_flask import app
 from app_flask.modelos.modelo_servicios import Servicio
 
@@ -58,17 +58,29 @@ def detalle_servicio(id_servicio):
         servicio=servicio
     )
 
-@app.route('/servicios/<int:id_servicio>/editar', methods=['GET'])
+@app.route('/servicios/<int:id_servicio>/editar')
 def formulario_editar_servicio(id_servicio):
     if 'id_administrador' not in session:
         return redirect('/')
 
+    if not session.get(
+        'puede_gestionar_catalogo',
+        False
+    ):
+        flash(
+            (
+                'No tienes permiso para editar '
+                'precios de servicios.'
+            ),
+            'error_permiso'
+        )
+        return redirect(
+            f'/servicios/{id_servicio}'
+        )
+
     servicio = Servicio.obtener_por_id({
         'id_servicio': id_servicio
     })
-
-    if servicio is None:
-        return redirect('/servicios')
 
     return render_template(
         'servicios/editar.html',
@@ -79,6 +91,21 @@ def formulario_editar_servicio(id_servicio):
 def actualizar_servicio(id_servicio):
     if 'id_administrador' not in session:
         return redirect('/')
+
+    if not session.get(
+        'puede_gestionar_catalogo',
+        False
+    ):
+        flash(
+            (
+                'No tienes permiso para modificar '
+                'los datos de los servicios existentes.'
+            ),
+            'error_permiso'
+        )
+        return redirect(
+            f'/servicios/{id_servicio}'
+        )
 
     if not Servicio.validar(request.form):
         return redirect(f'/servicios/{id_servicio}/editar')
@@ -92,13 +119,53 @@ def actualizar_servicio(id_servicio):
 
     return redirect(f'/servicios/{id_servicio}')
 
-@app.route('/servicios/<int:id_servicio>/eliminar', methods=['POST'])
+@app.route(
+    '/servicios/<int:id_servicio>/eliminar',
+    methods=['POST']
+)
 def eliminar_servicio(id_servicio):
     if 'id_administrador' not in session:
         return redirect('/')
 
-    Servicio.eliminar_uno({
+    if not session.get(
+        'puede_gestionar_catalogo',
+        False
+    ):
+        flash(
+            'No tienes permiso para eliminar servicios.',
+            'error_permiso'
+        )
+        return redirect(
+            f'/servicios/{id_servicio}'
+        )
+
+    servicio = Servicio.obtener_por_id({
         'id_servicio': id_servicio
     })
+
+    if servicio is None:
+        flash(
+            'El servicio no existe.',
+            'error_servicio'
+        )
+        return redirect('/servicios')
+
+    resultado = Servicio.eliminar_uno({
+        'id_servicio': id_servicio
+    })
+
+    if resultado is False:
+        flash(
+            'No se pudo eliminar el servicio.',
+            'error_servicio'
+        )
+        return redirect(
+            f'/servicios/{id_servicio}'
+        )
+
+    flash(
+        'Servicio eliminado correctamente.',
+        'exito'
+    )
 
     return redirect('/servicios')

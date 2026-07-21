@@ -553,3 +553,34 @@ label {
     background-color: var(--rosa-principal);
     color: var(--texto-principal);
 }
+
+/* ==========================================
+   ACORDEÓN DE ÓRDENES
+========================================== */
+
+.accordion-item{
+    border: 1px solid rgba(200, 197, 226, .55);
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+.accordion-button{
+    background-color: var(--blanco);
+    color: var(--texto-principal);
+    font-weight: 600;
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed){
+    background-color: var(--rosa-principal);
+    color: var(--texto-principal);
+}
+
+.accordion-button:focus{
+    border-color: var(--lila-principal);
+    box-shadow: 0 0 0 .25rem rgba(200, 197, 226, .25) !important;
+}
+
+.accordion-body{
+    background-color: var(--blanco);
+}

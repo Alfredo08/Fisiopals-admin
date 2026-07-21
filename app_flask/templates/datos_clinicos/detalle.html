@@ -70,9 +70,11 @@
     <div class="card-body clinical-text">{{ dato_clinico.trabajo_casa }}</div>
   </div>
   <!-- Acción peligrosa -->
+  {% if session.get('puede_gestionar_catalogo', False) %}
   <div class="d-flex justify-content-end">
     <form action="/datos-clinicos/{{ dato_clinico.id_dato_clinico }}/eliminar" method="POST" onsubmit="return confirm('¿Deseas eliminar esta sesión clínica? Esta acción no se puede deshacer.');">
       <button type="submit" class="btn btn-danger">Eliminar sesión clínica</button>
     </form>
   </div>
+  {% endif %}
 {% endblock %}

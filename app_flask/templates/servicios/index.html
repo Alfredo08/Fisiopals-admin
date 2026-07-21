@@ -53,10 +53,12 @@
                   <td class="fw-semibold text-nowrap">${{ '%.2f'|format(servicio.precio) }}</td>
                   <td class="text-center text-nowrap">
                     <a href="/servicios/{{ servicio.id_servicio }}" class="btn btn-sm btn-outline-custom">Ver</a>
+                    {% if session.get('puede_gestionar_catalogo', False) %}
                     <a href="/servicios/{{ servicio.id_servicio }}/editar" class="btn btn-sm btn-primary">Editar</a>
                     <form action="/servicios/{{ servicio.id_servicio }}/eliminar" method="POST" class="d-inline" onsubmit="return confirm('¿Deseas eliminar este servicio?');">
                       <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                     </form>
+                    {% endif %}
                   </td>
                 </tr>
               {% endfor %}

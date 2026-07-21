@@ -27,10 +27,18 @@
         </div>
         <div class="mb-4">
           <label for="precio" class="form-label">Precio</label>
+
           <div class="input-group">
             <span class="input-group-text">$</span>
-            <input type="number" id="precio" name="precio" class="form-control" step="0.01" min="0" value="{{ servicio.precio }}" required />
+            <input type="number" id="precio" name="precio" class="form-control" step="0.01" min="0" value="{{ servicio.precio }}" 
+            {% if not session.get('puede_gestionar_catalogo', False) %}
+              readonly
+            {% endif %}
+            required />
           </div>
+          {% if not session.get('puede_gestionar_catalogo', False) %}
+            <small class="text-soft">Tu cuenta no tiene permiso para modificar precios.</small>
+          {% endif %}
         </div>
         <!-- Acciones -->
         <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">

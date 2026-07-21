@@ -6,3 +6,4 @@ app.secret_key = "fisiopals"
 
 BASE_DATOS = "bd_fisiopals"
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+USUARIO_REGEX = re.compile(r'^[A-Za-z0-9._-]+$')

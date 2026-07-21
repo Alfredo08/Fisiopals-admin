@@ -1,29 +1,35 @@
 from app_flask.config.mysqlconnection import connectToMySQL
 from flask import flash
-from app_flask import BASE_DATOS, EMAIL_REGEX
+from app_flask import BASE_DATOS, USUARIO_REGEX
 
 
 class Administrador:
     def __init__(self, datos):
         self.id_administrador = datos['id_administrador']
         self.nombre_completo = datos['nombre_completo']
-        self.correo = datos['correo']
+        self.nombre_usuario = datos['nombre_usuario']
         self.password = datos['password']
+        self.puede_gestionar_catalogo = bool(
+            datos.get('puede_gestionar_catalogo', 0)
+        )
 
     @classmethod
     def crear_uno(cls, datos):
         query = """
-                INSERT INTO administradores(
-                    nombre_completo,
-                    correo,
-                    password
-                )
-                VALUES(
-                    %(nombre_completo)s,
-                    %(correo)s,
-                    %(password)s
-                );
-                """
+                    INSERT INTO administradores(
+                        nombre_completo,
+                        nombre_usuario,
+                        password,
+                        puede_gestionar_catalogo
+                    )
+                    VALUES(
+                        %(nombre_completo)s,
+                        %(nombre_usuario)s,
+                        %(password)s,
+                        0
+                    );
+                    """
+
         return connectToMySQL(BASE_DATOS).query_db(query, datos)
 
     @classmethod
@@ -41,15 +47,16 @@ class Administrador:
         return cls(resultado[0])
 
     @classmethod
-    def obtener_por_correo(cls, datos):
+    def obtener_por_nombre_usuario(cls, datos):
         query = """
                 SELECT *
                 FROM administradores
-                WHERE correo = %(correo)s;
+                WHERE nombre_usuario = %(nombre_usuario)s;
                 """
+
         resultado = connectToMySQL(BASE_DATOS).query_db(query, datos)
 
-        if len(resultado) < 1:
+        if resultado is False or len(resultado) < 1:
             return None
 
         return cls(resultado[0])
@@ -101,21 +108,51 @@ class Administrador:
     def validar(datos):
         es_valido = True
 
-        if len(datos['nombre_completo'].strip()) < 3:
+        nombre_completo = datos.get(
+            'nombre_completo',
+            ''
+        ).strip()
+
+        nombre_usuario = datos.get(
+            'nombre_usuario',
+            ''
+        ).strip()
+
+        password = datos.get(
+            'password',
+            ''
+        )
+
+        password_confirmar = datos.get(
+            'password_confirmar',
+            ''
+        )
+
+        if len(nombre_completo) < 3:
             flash(
                 'El nombre debe tener al menos 3 caracteres.',
                 'error_nombre_completo'
             )
             es_valido = False
 
-        if not EMAIL_REGEX.match(datos['correo']):
+        if len(nombre_usuario) < 4:
             flash(
-                'Por favor ingresa un correo válido.',
-                'error_correo'
+                'El nombre de usuario debe tener al menos 4 caracteres.',
+                'error_nombre_usuario'
             )
             es_valido = False
 
-        if len(datos['password']) < 8:
+        elif not USUARIO_REGEX.match(nombre_usuario):
+            flash(
+                (
+                    'El nombre de usuario solo puede contener '
+                    'letras, números, puntos, guiones y guiones bajos.'
+                ),
+                'error_nombre_usuario'
+            )
+            es_valido = False
+
+        if len(password) < 8:
             flash(
                 'La contraseña debe tener al menos 8 caracteres.',
                 'error_password'
@@ -123,7 +160,7 @@ class Administrador:
             es_valido = False
 
         if 'password_confirmar' in datos:
-            if datos['password'] != datos['password_confirmar']:
+            if password != password_confirmar:
                 flash(
                     'Las contraseñas no coinciden.',
                     'error_password'
