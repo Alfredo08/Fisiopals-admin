@@ -45,10 +45,22 @@ def crear_cliente():
     datos_paciente = {
         'nombre': request.form.get('nombre_paciente', '').strip(),
         'raza': request.form.get('raza', '').strip(),
-        'edad': request.form.get('edad', '').strip(),
+        'edad': (
+            request.form.get(
+                'edad',
+                ''
+            ).strip()
+            or None
+        ),
         'especie': request.form.get('especie', '').strip(),
         'sexo': request.form.get('sexo', '').strip(),
-
+        'fecha_nacimiento': (
+            request.form.get(
+                'fecha_nacimiento',
+                ''
+            ).strip()
+            or None
+        ),
         'historia_clinica': request.form.get(
             'historia_clinica',
             ''

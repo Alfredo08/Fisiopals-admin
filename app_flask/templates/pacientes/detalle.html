@@ -45,22 +45,48 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Especie</p>
           <p class="fw-semibold mb-0">{{ paciente.especie }}</p>
         </div>
-        <div class="col-md-3 mb-3">
+
+        <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Raza</p>
           <p class="fw-semibold mb-0">{{ paciente.raza }}</p>
         </div>
-        <div class="col-md-3 mb-3">
-          <p class="text-soft mb-1">Edad</p>
-          <p class="fw-semibold mb-0">{{ paciente.edad }}</p>
-        </div>
-        <div class="col-md-3 mb-3">
+
+        <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Sexo</p>
           <p class="fw-semibold mb-0">{{ paciente.sexo }}</p>
         </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <p class="text-soft mb-1">Fecha de nacimiento</p>
+
+          <p class="fw-semibold mb-0">
+            {% if paciente.fecha_nacimiento %}
+              {{ paciente.fecha_nacimiento.strftime('%d/%m/%Y') }}
+            {% else %}
+              <span class="text-soft">No registrada</span>
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <p class="text-soft mb-1">Edad</p>
+
+          <p class="fw-semibold mb-0">
+              {% if paciente.edad is not none %}
+                  {{ paciente.edad }}
+              {% else %}
+                  <span class="text-soft">
+                      No registrada
+                  </span>
+              {% endif %}
+          </p>
+      </div>
       </div>
     </div>
   </div>

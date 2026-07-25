@@ -20,6 +20,7 @@ class Paciente:
         self.id_cliente = datos['id_cliente']
         self.fecha_creacion = datos['fecha_creacion']
         self.fecha_actualizacion = datos['fecha_actualizacion']
+        self.fecha_nacimiento = datos['fecha_nacimiento']
 
         self.cliente = None
         self.datos_clinicos = []
@@ -31,6 +32,7 @@ class Paciente:
                 INSERT INTO pacientes(
                     nombre,
                     raza,
+                    fecha_nacimiento,
                     edad,
                     especie,
                     sexo,
@@ -42,6 +44,7 @@ class Paciente:
                 VALUES(
                     %(nombre)s,
                     %(raza)s,
+                    %(fecha_nacimiento)s,
                     %(edad)s,
                     %(especie)s,
                     %(sexo)s,
@@ -51,7 +54,11 @@ class Paciente:
                     %(id_cliente)s
                 );
                 """
-        return connectToMySQL(BASE_DATOS).query_db(query, datos)
+
+        return connectToMySQL(BASE_DATOS).query_db(
+            query,
+            datos
+        )
 
     @classmethod
     def obtener_por_id(cls, datos):
@@ -224,6 +231,7 @@ class Paciente:
                 UPDATE pacientes
                 SET nombre = %(nombre)s,
                     raza = %(raza)s,
+                    fecha_nacimiento = %(fecha_nacimiento)s,
                     edad = %(edad)s,
                     especie = %(especie)s,
                     sexo = %(sexo)s,
@@ -233,7 +241,11 @@ class Paciente:
                     id_cliente = %(id_cliente)s
                 WHERE id_paciente = %(id_paciente)s;
                 """
-        return connectToMySQL(BASE_DATOS).query_db(query, datos)
+
+        return connectToMySQL(BASE_DATOS).query_db(
+            query,
+            datos
+        )
 
     @classmethod
     def eliminar_uno(cls, datos):
@@ -405,12 +417,6 @@ class Paciente:
 
         edad = str(datos.get('edad', '')).strip()
 
-        if not edad.isdigit() or int(edad) < 0:
-            flash(
-                'La edad debe ser un número válido.',
-                'error_edad'
-            )
-            es_valido = False
 
         especies_validas = [
             'Canino',

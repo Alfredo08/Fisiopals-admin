@@ -183,12 +183,15 @@ Nuevo Cliente y Paciente
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 mb-3">
+
+                <div class="col-md-3 mb-3">
+
                     <label
                         for="raza"
                         class="form-label">
                         Raza
                     </label>
+
                     <input
                         type="text"
                         id="raza"
@@ -196,90 +199,113 @@ Nuevo Cliente y Paciente
                         class="form-control"
                         value="{{ request.form.get('raza', '') }}"
                         required>
-                    {% with mensajes = get_flashed_messages(
-                        category_filter=['error_raza']
-                    ) %}
-                        {% for mensaje in mensajes %}
-                            <small class="text-danger d-block mt-1">
-                                {{ mensaje }}
-                            </small>
-                        {% endfor %}
-                    {% endwith %}
+
                 </div>
-                <div class="col-md-4 mb-3">
+
+                <div class="col-md-3 mb-3">
+
+                    <label
+                        for="fecha_nacimiento"
+                        class="form-label">
+                        Fecha de nacimiento
+                        <span class="text-soft fw-normal">
+                            (opcional)
+                        </span>
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fecha_nacimiento"
+                        name="fecha_nacimiento"
+                        class="form-control"
+                        value="{{ request.form.get('fecha_nacimiento', '') }}">
+
+                </div>
+
+                <div class="col-md-3 mb-3">
+
                     <label
                         for="edad"
                         class="form-label">
                         Edad
+                        <span class="text-soft fw-normal">
+                            (opcional)
+                        </span>
                     </label>
+
                     <input
                         type="number"
                         id="edad"
                         name="edad"
                         class="form-control"
                         min="0"
-                        value="{{ request.form.get('edad', '') }}"
-                        required>
-                    {% with mensajes = get_flashed_messages(
-                        category_filter=['error_edad']
-                    ) %}
-                        {% for mensaje in mensajes %}
-                            <small class="text-danger d-block mt-1">
-                                {{ mensaje }}
-                            </small>
-                        {% endfor %}
-                    {% endwith %}
+                        value="{{ request.form.get('edad', '') }}">
+
                 </div>
-                <div class="col-md-4 mb-3">
+
+                <div class="col-md-3 mb-3">
+
                     <label
                         for="sexo"
                         class="form-label">
                         Sexo
                     </label>
+
                     <select
                         id="sexo"
                         name="sexo"
                         class="form-select"
                         required>
+
                         <option value="">
                             Selecciona una opción
                         </option>
-                        <option value="Macho"
-                            {% if request.form.get('sexo') == 'Macho' %}selected{% endif %}>
+
+                        <option
+                            value="Macho"
+                            {% if request.form.get('sexo') == 'Macho' %}
+                                selected
+                            {% endif %}>
                             Macho
                         </option>
 
-                        <option value="Macho castrado"
-                            {% if request.form.get('sexo') == 'Macho castrado' %}selected{% endif %}>
+                        <option
+                            value="Macho castrado"
+                            {% if request.form.get('sexo') == 'Macho castrado' %}
+                                selected
+                            {% endif %}>
                             Macho castrado
                         </option>
 
-                        <option value="Hembra"
-                            {% if request.form.get('sexo') == 'Hembra' %}selected{% endif %}>
+                        <option
+                            value="Hembra"
+                            {% if request.form.get('sexo') == 'Hembra' %}
+                                selected
+                            {% endif %}>
                             Hembra
                         </option>
 
-                        <option value="Hembra castrada"
-                            {% if request.form.get('sexo') == 'Hembra castrada' %}selected{% endif %}>
+                        <option
+                            value="Hembra castrada"
+                            {% if request.form.get('sexo') == 'Hembra castrada' %}
+                                selected
+                            {% endif %}>
                             Hembra castrada
                         </option>
+
                     </select>
-                    {% with mensajes = get_flashed_messages(
-                        category_filter=['error_sexo']
-                    ) %}
-                        {% for mensaje in mensajes %}
-                            <small class="text-danger d-block mt-1">
-                                {{ mensaje }}
-                            </small>
-                        {% endfor %}
-                    {% endwith %}
+
                 </div>
+
             </div>
             <div class="mb-3">
                 <label
                     for="inicio_problema"
                     class="form-label">
                     Inicio del problema
+                    <span class="text-soft fw-normal">
+                        (opcional)
+                    </span>
                 </label>
                 <input
                     type="datetime-local"
@@ -293,6 +319,9 @@ Nuevo Cliente y Paciente
                     for="historia_clinica"
                     class="form-label">
                     Historia clínica
+                    <span class="text-soft fw-normal">
+                        (opcional)
+                    </span>
                 </label>
                 <textarea
                     id="historia_clinica"
@@ -314,6 +343,9 @@ Nuevo Cliente y Paciente
                     for="diagnostico_vet"
                     class="form-label">
                     Diagnóstico veterinario
+                    <span class="text-soft fw-normal">
+                        (opcional)
+                    </span>
                 </label>
                 <textarea
                     id="diagnostico_vet"

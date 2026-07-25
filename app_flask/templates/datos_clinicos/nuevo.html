@@ -64,7 +64,7 @@
     </div>
     <!-- Objetivos -->
     <div class="card shadow-soft overflow-hidden mb-4">
-      <div class="card-header">Observaciones para la siguiente sesión</div>
+      <div class="card-header">Observaciones</div>
       <div class="card-body">
         <textarea name="objetivos" class="form-control" rows="5">{{ request.form.objetivos }}</textarea>
         {% with mensajes=get_flashed_messages(category_filter=['error_objetivos']) %}

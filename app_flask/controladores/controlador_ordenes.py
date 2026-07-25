@@ -172,7 +172,7 @@ def crear_orden():
         total_servicios += subtotal
 
     # La orden debe incluir uno o más servicios.
-    if len(detalles_servicios) == 0:
+    if len(detalles_servicios) == 0 and nombre_comprador == None:
         flash(
             'La orden debe incluir al menos un servicio.',
             'error_orden'

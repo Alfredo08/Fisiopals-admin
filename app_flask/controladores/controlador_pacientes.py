@@ -59,10 +59,21 @@ def crear_paciente():
             ''
         ).strip(),
 
-        'edad': request.form.get(
-            'edad',
-            ''
-        ).strip(),
+        'fecha_nacimiento': (
+            request.form.get(
+                'fecha_nacimiento',
+                ''
+            ).strip()
+            or None
+        ),
+
+        'edad': (
+            request.form.get(
+                'edad',
+                ''
+            ).strip()
+            or None
+        ),
 
         'especie': request.form.get(
             'especie',
@@ -198,10 +209,21 @@ def actualizar_paciente(id_paciente):
             ''
         ).strip(),
 
-        'edad': request.form.get(
-            'edad',
-            ''
-        ).strip(),
+        'fecha_nacimiento': (
+            request.form.get(
+                'fecha_nacimiento',
+                ''
+            ).strip()
+            or None
+        ),
+
+        'edad': (
+            request.form.get(
+                'edad',
+                ''
+            ).strip()
+            or None
+        ),
 
         'especie': request.form.get(
             'especie',

@@ -37,6 +37,10 @@ a {
     text-decoration: none;
 }
 
+th{
+    font-size: 20px;
+}
+
 
 /* ==========================================
    NAVBAR PRINCIPAL
@@ -584,3 +588,4 @@ label {
 .accordion-body{
     background-color: var(--blanco);
 }
+
