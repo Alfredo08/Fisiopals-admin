@@ -114,6 +114,7 @@ class Orden:
                     pacientes.id_cliente AS paciente_id_cliente,
                     pacientes.fecha_creacion AS paciente_fecha_creacion,
                     pacientes.fecha_actualizacion AS paciente_fecha_actualizacion,
+                    pacientes.fecha_nacimiento AS paciente_fecha_nacimiento,
 
                     clientes.id_cliente AS cliente_id_cliente,
                     clientes.nombre AS cliente_nombre,
@@ -149,6 +150,7 @@ class Orden:
                 "sexo": fila["paciente_sexo"],
                 "historia_clinica": fila["paciente_historia_clinica"],
                 "inicio_problema": fila["paciente_inicio_problema"],
+                "fecha_nacimiento": fila["paciente_fecha_nacimiento"],
                 "diagnostico_vet": fila["paciente_diagnostico_vet"],
                 "id_cliente": fila["paciente_id_cliente"],
                 "fecha_creacion": fila["paciente_fecha_creacion"],
