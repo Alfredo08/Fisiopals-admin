@@ -179,110 +179,184 @@ Nueva Orden
             {% endif %}
         </div>
     </div>
+
     <!-- Productos -->
-    <div class="card shadow-soft overflow-hidden mb-4">
-        <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-            <span>
-                Productos
+<div class="card shadow-soft overflow-hidden mb-4">
+
+    <div
+        class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+        <button
+            type="button"
+            class="btn btn-link p-0 text-decoration-none app-link fw-semibold"
+            data-bs-toggle="collapse"
+            data-bs-target="#seccionProductos"
+            aria-expanded="true"
+            aria-controls="seccionProductos">
+
+            Productos
+
+            <span class="ms-2">
+                (Abrir / cerrar)
             </span>
-            <div class="product-search-wrapper">
-                <input
-                    type="search"
-                    id="buscarProducto"
-                    class="form-control form-control-sm"
-                    placeholder="Buscar producto..."
-                    autocomplete="off">
-            </div>
+
+        </button>
+
+        <div class="product-search-wrapper">
+
+            <input
+                type="search"
+                id="buscarProducto"
+                class="form-control form-control-sm"
+                placeholder="Buscar producto..."
+                autocomplete="off">
+
         </div>
+
+    </div>
+
+    <div
+        id="seccionProductos"
+        class="collapse show">
+
         <div class="card-body p-0">
+
             {% if productos|length == 0 %}
+
                 <div class="text-center py-5">
+
                     <h5>
                         No hay productos disponibles
                     </h5>
+
                     <p class="text-soft mb-0">
                         El inventario no contiene productos registrados.
                     </p>
+
                 </div>
+
             {% else %}
+
                 <div
                     id="mensajeSinProductos"
                     class="text-center py-5 d-none">
+
                     <h5>
                         No se encontraron productos
                     </h5>
+
                     <p class="text-soft mb-0">
                         Intenta buscar usando otro nombre.
                     </p>
+
                 </div>
-                <div class="table-responsive">
-                    <table
-                        id="tablaProductosOrden"
-                        class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Precio</th>
-                                <th>Stock disponible</th>
-                                <th>Estado</th>
-                                <th style="width: 150px;">
-                                    Cantidad
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for producto in productos %}
-                            <tr
-                                class="fila-producto"
-                                data-producto="{{ producto.nombre|lower }}">
-                                <td class="fw-semibold">
-                                    {{ producto.nombre }}
-                                </td>
-                                <td class="text-nowrap">
-                                    ${{ "%.2f"|format(producto.precio) }}
-                                </td>
-                                <td class="fw-semibold">
-                                    {{ producto.stock }}
-                                </td>
-                                <td>
-                                    {% if producto.stock == 0 %}
-                                        <span class="badge badge-stock-agotado">
-                                            Sin stock
-                                        </span>
-                                    {% elif producto.stock <= 5 %}
-                                        <span class="badge badge-stock-bajo">
-                                            Stock bajo
-                                        </span>
-                                    {% else %}
-                                        <span class="badge badge-stock-disponible">
-                                            Disponible
-                                        </span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <input
-                                        type="hidden"
-                                        name="id_producto"
-                                        value="{{ producto.id_producto }}">
-                                    <input
-                                        type="number"
-                                        name="cantidad_producto"
-                                        class="form-control cantidad-producto"
-                                        min="0"
-                                        max="{{ producto.stock }}"
-                                        value="0"
-                                        {% if producto.stock == 0 %}
-                                            readonly
-                                        {% endif %}>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+
+                <div class="productos-scroll">
+
+                    <div class="table-responsive">
+
+                        <table
+                            id="tablaProductosOrden"
+                            class="table table-hover align-middle mb-0">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th>Stock disponible</th>
+                                    <th>Estado</th>
+                                    <th style="width: 150px;">
+                                        Cantidad
+                                    </th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for producto in productos %}
+
+                                    <tr
+                                        class="fila-producto"
+                                        data-producto="{{ producto.nombre|lower }}">
+
+                                        <td class="fw-semibold">
+                                            {{ producto.nombre }}
+                                        </td>
+
+                                        <td class="text-nowrap">
+                                            ${{ "%.2f"|format(producto.precio) }}
+                                        </td>
+
+                                        <td class="fw-semibold">
+                                            {{ producto.stock }}
+                                        </td>
+
+                                        <td>
+
+                                            {% if producto.stock == 0 %}
+
+                                                <span class="badge badge-stock-agotado">
+                                                    Sin stock
+                                                </span>
+
+                                            {% elif producto.stock <= 5 %}
+
+                                                <span class="badge badge-stock-bajo">
+                                                    Stock bajo
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="badge badge-stock-disponible">
+                                                    Disponible
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <td>
+
+                                            <input
+                                                type="hidden"
+                                                name="id_producto"
+                                                value="{{ producto.id_producto }}">
+
+                                            <input
+                                                type="number"
+                                                name="cantidad_producto"
+                                                class="form-control cantidad-producto"
+                                                min="0"
+                                                max="{{ producto.stock }}"
+                                                value="0"
+                                                {% if producto.stock == 0 %}
+                                                    readonly
+                                                {% endif %}>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
                 </div>
+
             {% endif %}
+
         </div>
+
     </div>
+
+</div>
+
     <!-- Acciones -->
     <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-2">
         <a

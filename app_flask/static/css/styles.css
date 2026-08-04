@@ -589,3 +589,34 @@ label {
     background-color: var(--blanco);
 }
 
+/* ==========================================
+   PRODUCTOS EN NUEVA ORDEN
+========================================== */
+
+.productos-scroll{
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.productos-scroll thead th{
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: var(--lila-principal);
+}
+
+.card-header .btn-link{
+    color: var(--texto-principal);
+}
+
+.card-header .btn-link:hover{
+    color: var(--texto-principal);
+    opacity: .75;
+}
+
+@media (max-width: 767px){
+    .productos-scroll{
+        max-height: 420px;
+    }
+}
