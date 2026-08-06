@@ -229,8 +229,4 @@ class Cliente:
             flash('Por favor ingresa un correo válido.', 'error_correo')
             es_valido = False
 
-        if len(datos['telefono'].strip()) < 8:
-            flash('Por favor ingresa un teléfono válido.', 'error_telefono')
-            es_valido = False
-
         return es_valido

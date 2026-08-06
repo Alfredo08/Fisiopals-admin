@@ -91,7 +91,8 @@ class DatoClinico:
                     pacientes.diagnostico_vet AS paciente_diagnostico_vet,
                     pacientes.id_cliente AS paciente_id_cliente,
                     pacientes.fecha_creacion AS paciente_fecha_creacion,
-                    pacientes.fecha_actualizacion AS paciente_fecha_actualizacion
+                    pacientes.fecha_actualizacion AS paciente_fecha_actualizacion,
+                    pacientes.fecha_nacimiento AS paciente_fecha_nacimiento
 
                 FROM datos_clinicos
                 JOIN pacientes
@@ -119,7 +120,8 @@ class DatoClinico:
             "diagnostico_vet": fila["paciente_diagnostico_vet"],
             "id_cliente": fila["paciente_id_cliente"],
             "fecha_creacion": fila["paciente_fecha_creacion"],
-            "fecha_actualizacion": fila["paciente_fecha_actualizacion"]
+            "fecha_actualizacion": fila["paciente_fecha_actualizacion"],
+            "fecha_nacimiento": fila["paciente_fecha_nacimiento"],
         }
 
         dato_clinico.paciente = modelo_pacientes.Paciente(datos_paciente)
