@@ -347,6 +347,28 @@ class Orden:
         return ordenes
 
     @classmethod
+    def actualizar_resumen_pago_edicion(cls, datos):
+        query = """
+                UPDATE ordenes
+                SET total = %(total)s,
+                    monto_pagado = %(monto_pagado)s,
+                    saldo_aplicado = %(saldo_aplicado)s,
+                    estado_pago = %(estado_pago)s,
+                    estado = CASE
+                        WHEN estado = 'cancelada'
+                            THEN 'cancelada'
+                        WHEN %(estado_pago)s = 'pagada'
+                            THEN 'pagada'
+                        WHEN estado = 'pagada'
+                            THEN 'pendiente'
+                        ELSE estado
+                    END
+                WHERE id_orden = %(id_orden)s;
+                """
+
+        return connectToMySQL(BASE_DATOS).query_db(query, datos)
+
+    @classmethod
     def actualizar_resumen_pago(cls, datos):
         query = """
                 UPDATE ordenes

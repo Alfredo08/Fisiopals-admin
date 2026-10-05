@@ -18,7 +18,7 @@ def listar_pacientes():
             'busqueda': '%' + busqueda + '%'
         })
     else:
-        pacientes = Paciente.obtener_todos()
+        pacientes = Paciente.obtener_todos_con_cliente()
 
     return render_template(
         'pacientes/index.html',
