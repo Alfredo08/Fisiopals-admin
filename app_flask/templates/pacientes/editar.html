@@ -224,10 +224,10 @@ Editar Paciente
             </div>
 
 
-            <!-- Fecha de nacimiento, edad e inicio del problema -->
+            <!-- Fecha de nacimiento, edad, estado y fallecimiento -->
             <div class="row">
 
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
 
                     <label
                         for="fecha_nacimiento"
@@ -247,7 +247,7 @@ Editar Paciente
 
                 </div>
 
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
 
                     <label
                         for="edad"
@@ -279,6 +279,89 @@ Editar Paciente
                     {% endwith %}
 
                 </div>
+
+                <div class="col-md-3 mb-3">
+
+                    <label
+                        for="estado"
+                        class="form-label">
+                        Estado
+                    </label>
+
+                    <select
+                        id="estado"
+                        name="estado"
+                        class="form-select"
+                        required>
+
+                        <option
+                            value="Activo"
+                            {% if paciente.estado == 'Activo' %}
+                                selected
+                            {% endif %}>
+                            Activo
+                        </option>
+
+                        <option
+                            value="Fallecido"
+                            {% if paciente.estado == 'Fallecido' %}
+                                selected
+                            {% endif %}>
+                            Fallecido
+                        </option>
+
+                    </select>
+
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_estado']
+                    ) %}
+
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+
+                    {% endwith %}
+
+                </div>
+
+                <div
+                    class="col-md-3 mb-3"
+                    id="contenedorFechaFallecimiento">
+
+                    <label
+                        for="fecha_fallecimiento"
+                        class="form-label">
+                        Fecha de fallecimiento
+                    </label>
+
+                    <input
+                        type="date"
+                        id="fecha_fallecimiento"
+                        name="fecha_fallecimiento"
+                        class="form-control"
+                        value="{% if paciente.fecha_fallecimiento %}{{ paciente.fecha_fallecimiento.strftime('%Y-%m-%d') }}{% endif %}">
+
+                    {% with mensajes = get_flashed_messages(
+                        category_filter=['error_fecha_fallecimiento']
+                    ) %}
+
+                        {% for mensaje in mensajes %}
+                            <small class="text-danger d-block mt-1">
+                                {{ mensaje }}
+                            </small>
+                        {% endfor %}
+
+                    {% endwith %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Inicio del problema -->
+            <div class="row">
 
                 <div class="col-md-4 mb-3">
 
@@ -391,5 +474,46 @@ Editar Paciente
     </div>
 
 </div>
+
+
+<!-- Control de fecha de fallecimiento -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const estado = document.getElementById('estado');
+    const contenedorFecha = document.getElementById(
+        'contenedorFechaFallecimiento'
+    );
+    const fechaFallecimiento = document.getElementById(
+        'fecha_fallecimiento'
+    );
+
+    if (!estado || !contenedorFecha || !fechaFallecimiento) {
+        return;
+    }
+
+    function actualizarFechaFallecimiento() {
+
+        const fallecido = estado.value === 'Fallecido';
+
+        contenedorFecha.style.display = fallecido
+            ? ''
+            : 'none';
+
+        fechaFallecimiento.required = fallecido;
+
+        if (!fallecido) {
+            fechaFallecimiento.value = '';
+        }
+    }
+
+    estado.addEventListener(
+        'change',
+        actualizarFechaFallecimiento
+    );
+
+    actualizarFechaFallecimiento();
+});
+</script>
 
 {% endblock %}

@@ -74,7 +74,19 @@ def crear_cliente():
         'diagnostico_vet': request.form.get(
             'diagnostico_vet',
             ''
-        ).strip()
+        ).strip(),
+        'estado': request.form.get(
+            'estado',
+            'Activo'
+        ).strip(),
+
+        'fecha_fallecimiento': (
+            request.form.get(
+                'fecha_fallecimiento',
+                ''
+            ).strip()
+            or None
+        )
     }
 
     cliente_valido = Cliente.validar(datos_cliente)

@@ -107,7 +107,9 @@ class Cliente:
                     pacientes.diagnostico_vet AS paciente_diagnostico_vet,
                     pacientes.id_cliente AS paciente_id_cliente,
                     pacientes.fecha_creacion AS paciente_fecha_creacion,
-                    pacientes.fecha_actualizacion AS paciente_fecha_actualizacion
+                    pacientes.fecha_actualizacion AS paciente_fecha_actualizacion,
+                    pacientes.estado AS paciente_estado,
+                    pacientes.fecha_fallecimiento AS paciente_fecha_fallecimiento
 
                 FROM clientes
                 LEFT JOIN pacientes
@@ -128,7 +130,7 @@ class Cliente:
                     "id_paciente": fila['paciente_id_paciente'],
                     "nombre": fila['paciente_nombre'],
                     "raza": fila['paciente_raza'],
-                    "fecha_nacimiento": fila["paciente_fecha_nacimiento"],
+                    "fecha_nacimiento": fila['paciente_fecha_nacimiento'],
                     "edad": fila['paciente_edad'],
                     "especie": fila['paciente_especie'],
                     "sexo": fila['paciente_sexo'],
@@ -137,7 +139,9 @@ class Cliente:
                     "diagnostico_vet": fila['paciente_diagnostico_vet'],
                     "id_cliente": fila['paciente_id_cliente'],
                     "fecha_creacion": fila['paciente_fecha_creacion'],
-                    "fecha_actualizacion": fila['paciente_fecha_actualizacion']
+                    "fecha_actualizacion": fila['paciente_fecha_actualizacion'],
+                    "estado": fila['paciente_estado'],
+                    "fecha_fallecimiento": fila['paciente_fecha_fallecimiento']
                 }
 
                 cliente.pacientes.append(

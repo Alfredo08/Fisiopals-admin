@@ -14,25 +14,31 @@
       <a href="/pacientes/{{ paciente.id_paciente }}/editar" class="btn btn-primary">Editar paciente</a>
     </div>
   </div>
+
   <!-- Información general -->
   <div class="card shadow-soft overflow-hidden mb-4">
     <div class="card-header">Información general</div>
     <div class="card-body">
+
       <div class="row">
         <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Código del paciente</p>
           <p class="fw-semibold mb-0">{{ paciente.codigo_paciente() }}</p>
         </div>
+
         <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Cliente</p>
           <p class="mb-0">
             {% if paciente.cliente %}
-              <a href="/clientes/{{ paciente.cliente.id_cliente }}" class="app-link">{{ paciente.cliente.nombre }}</a>
+              <a href="/clientes/{{ paciente.cliente.id_cliente }}" class="app-link">
+                {{ paciente.cliente.nombre }}
+              </a>
             {% else %}
               <span class="text-soft">No disponible</span>
             {% endif %}
           </p>
         </div>
+
         <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Inicio del problema</p>
           <p class="fw-semibold mb-0">
@@ -44,6 +50,7 @@
           </p>
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Especie</p>
@@ -62,7 +69,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Fecha de nacimiento</p>
 
           <p class="fw-semibold mb-0">
@@ -74,22 +81,54 @@
           </p>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
           <p class="text-soft mb-1">Edad</p>
 
           <p class="fw-semibold mb-0">
-              {% if paciente.edad is not none %}
-                  {{ paciente.edad }}
-              {% else %}
-                  <span class="text-soft">
-                      No registrada
-                  </span>
-              {% endif %}
+            {% if paciente.edad is not none %}
+              {{ paciente.edad }}
+            {% else %}
+              <span class="text-soft">No registrada</span>
+            {% endif %}
           </p>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <p class="text-soft mb-1">Estado</p>
+
+          <p class="mb-0">
+            {% if paciente.estado == 'Fallecido' %}
+              <span class="badge bg-secondary">
+                Fallecido
+              </span>
+            {% else %}
+              <span class="badge bg-success">
+                Activo
+              </span>
+            {% endif %}
+          </p>
+        </div>
       </div>
-      </div>
+
+      {% if paciente.estado == 'Fallecido' %}
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <p class="text-soft mb-1">Fecha de fallecimiento</p>
+
+            <p class="fw-semibold mb-0">
+              {% if paciente.fecha_fallecimiento %}
+                {{ paciente.fecha_fallecimiento.strftime('%d/%m/%Y') }}
+              {% else %}
+                <span class="text-soft">No registrada</span>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      {% endif %}
+
     </div>
   </div>
+
   <!-- Información clínica inicial -->
   <div class="card shadow-soft overflow-hidden mb-4">
     <div class="card-header">Información clínica inicial</div>
@@ -104,6 +143,7 @@
           {% endif %}
         </p>
       </div>
+
       <div>
         <p class="text-soft mb-1">Diagnóstico veterinario</p>
         <p class="mb-0">
@@ -116,17 +156,24 @@
       </div>
     </div>
   </div>
+
   <!-- Historial clínico -->
   <div class="card shadow-soft overflow-hidden">
     <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
       <span>Historial clínico</span>
-      <a href="/pacientes/{{ paciente.id_paciente }}/datos-clinicos/nuevo" class="btn btn-primary btn-sm">Nueva sesión clínica</a>
+
+      <a href="/pacientes/{{ paciente.id_paciente }}/datos-clinicos/nuevo" class="btn btn-primary btn-sm">
+        Nueva sesión clínica
+      </a>
     </div>
+
     <div class="card-body p-0">
       {% if paciente.datos_clinicos|length == 0 %}
         <div class="text-center py-5">
           <h5>Sin sesiones clínicas</h5>
-          <p class="text-soft mb-0">Este paciente aún no tiene sesiones clínicas registradas.</p>
+          <p class="text-soft mb-0">
+            Este paciente aún no tiene sesiones clínicas registradas.
+          </p>
         </div>
       {% else %}
         <div class="table-responsive">
@@ -140,16 +187,28 @@
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
+
             <tbody>
               {% for dato in paciente.datos_clinicos %}
                 <tr>
-                  <td class="text-nowrap">{{ dato.fecha.strftime('%d/%m/%Y') }}</td>
+                  <td class="text-nowrap">
+                    {{ dato.fecha.strftime('%d/%m/%Y') }}
+                  </td>
+
                   <td>{{ dato.objetivos }}</td>
+
                   <td>{{ dato.trabajo_sesion }}</td>
+
                   <td>{{ dato.trabajo_casa }}</td>
+
                   <td class="text-center text-nowrap">
-                    <a href="/datos-clinicos/{{ dato.id_dato_clinico }}" class="btn btn-sm btn-outline-custom">Ver</a>
-                    <a href="/datos-clinicos/{{ dato.id_dato_clinico }}/editar" class="btn btn-sm btn-primary">Editar</a>
+                    <a href="/datos-clinicos/{{ dato.id_dato_clinico }}" class="btn btn-sm btn-outline-custom">
+                      Ver
+                    </a>
+
+                    <a href="/datos-clinicos/{{ dato.id_dato_clinico }}/editar" class="btn btn-sm btn-primary">
+                      Editar
+                    </a>
                   </td>
                 </tr>
               {% endfor %}
@@ -159,49 +218,103 @@
       {% endif %}
     </div>
   </div>
+
   <!-- Órdenes del paciente -->
   <div class="card shadow-soft overflow-hidden mt-4">
     <div class="card-header">Órdenes del paciente</div>
+
     <div class="card-body">
       {% if ordenes|length == 0 %}
         <div class="text-center py-5">
           <h5>Sin órdenes registradas</h5>
-          <p class="text-soft mb-0">Este paciente todavía no tiene órdenes asociadas.</p>
+
+          <p class="text-soft mb-0">
+            Este paciente todavía no tiene órdenes asociadas.
+          </p>
         </div>
       {% else %}
         <div class="accordion" id="accordionOrdenesPaciente">
+
           {% for orden in ordenes %}
+
             <div class="accordion-item mb-3">
+
               <h2 class="accordion-header" id="encabezadoOrden{{ orden.id_orden }}">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#detalleOrden{{ orden.id_orden }}" aria-expanded="false" aria-controls="detalleOrden{{ orden.id_orden }}">
+
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#detalleOrden{{ orden.id_orden }}"
+                  aria-expanded="false"
+                  aria-controls="detalleOrden{{ orden.id_orden }}"
+                >
+
                   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center w-100 me-3 gap-2">
+
                     <div>
-                      <span class="fw-bold">Orden #{{ orden.id_orden }}</span>
-                      <span class="text-soft ms-md-2">{{ orden.fecha_creacion.strftime('%d/%m/%Y') }}</span>
+                      <span class="fw-bold">
+                        Orden #{{ orden.id_orden }}
+                      </span>
+
+                      <span class="text-soft ms-md-2">
+                        {{ orden.fecha_creacion.strftime('%d/%m/%Y') }}
+                      </span>
                     </div>
+
                     <div class="d-flex align-items-center gap-3">
+
                       {% if orden.estado_pago == 'pagada' %}
-                        <span class="badge badge-pagada">Pagada</span>
+                        <span class="badge badge-pagada">
+                          Pagada
+                        </span>
                       {% elif orden.estado_pago == 'parcial' %}
-                        <span class="badge badge-pendiente">Pago parcial</span>
+                        <span class="badge badge-pendiente">
+                          Pago parcial
+                        </span>
                       {% else %}
-                        <span class="badge badge-cancelada">Pendiente de pago</span>
+                        <span class="badge badge-cancelada">
+                          Pendiente de pago
+                        </span>
                       {% endif %}
-                      <span class="fw-bold text-nowrap">${{ '%.2f'|format(orden.total) }}</span>
+
+                      <span class="fw-bold text-nowrap">
+                        ${{ '%.2f'|format(orden.total) }}
+                      </span>
+
                     </div>
                   </div>
+
                 </button>
               </h2>
-              <div id="detalleOrden{{ orden.id_orden }}" class="accordion-collapse collapse" aria-labelledby="encabezadoOrden{{ orden.id_orden }}" data-bs-parent="#accordionOrdenesPaciente">
+
+              <div
+                id="detalleOrden{{ orden.id_orden }}"
+                class="accordion-collapse collapse"
+                aria-labelledby="encabezadoOrden{{ orden.id_orden }}"
+                data-bs-parent="#accordionOrdenesPaciente"
+              >
+
                 <div class="accordion-body">
+
                   <!-- Servicios -->
                   <div class="mb-4">
-                    <h6 class="fw-bold mb-3">Servicios</h6>
+
+                    <h6 class="fw-bold mb-3">
+                      Servicios
+                    </h6>
+
                     {% if orden.orden_servicios|length == 0 %}
-                      <p class="text-soft mb-0">Esta orden no tiene servicios registrados.</p>
+
+                      <p class="text-soft mb-0">
+                        Esta orden no tiene servicios registrados.
+                      </p>
+
                     {% else %}
+
                       <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
+
                           <thead>
                             <tr>
                               <th>Servicio</th>
@@ -210,28 +323,55 @@
                               <th>Subtotal</th>
                             </tr>
                           </thead>
+
                           <tbody>
                             {% for item in orden.orden_servicios %}
+
                               <tr>
-                                <td class="fw-semibold">{{ item.servicio.nombre }}</td>
-                                <td>{{ item.cantidad }}</td>
-                                <td class="text-nowrap">${{ '%.2f'|format(item.precio_unitario) }}</td>
-                                <td class="fw-semibold text-nowrap">${{ '%.2f'|format(item.subtotal) }}</td>
+                                <td class="fw-semibold">
+                                  {{ item.servicio.nombre }}
+                                </td>
+
+                                <td>
+                                  {{ item.cantidad }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                  ${{ '%.2f'|format(item.precio_unitario) }}
+                                </td>
+
+                                <td class="fw-semibold text-nowrap">
+                                  ${{ '%.2f'|format(item.subtotal) }}
+                                </td>
                               </tr>
+
                             {% endfor %}
                           </tbody>
+
                         </table>
                       </div>
+
                     {% endif %}
                   </div>
+
                   <!-- Productos -->
                   <div class="mb-4">
-                    <h6 class="fw-bold mb-3">Productos</h6>
+
+                    <h6 class="fw-bold mb-3">
+                      Productos
+                    </h6>
+
                     {% if orden.orden_productos|length == 0 %}
-                      <p class="text-soft mb-0">Esta orden no tiene productos registrados.</p>
+
+                      <p class="text-soft mb-0">
+                        Esta orden no tiene productos registrados.
+                      </p>
+
                     {% else %}
+
                       <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
+
                           <thead>
                             <tr>
                               <th>Producto</th>
@@ -240,34 +380,69 @@
                               <th>Subtotal</th>
                             </tr>
                           </thead>
+
                           <tbody>
                             {% for item in orden.orden_productos %}
+
                               <tr>
-                                <td class="fw-semibold">{{ item.producto.nombre }}</td>
-                                <td>{{ item.cantidad }}</td>
-                                <td class="text-nowrap">${{ '%.2f'|format(item.precio_unitario) }}</td>
-                                <td class="fw-semibold text-nowrap">${{ '%.2f'|format(item.subtotal) }}</td>
+
+                                <td class="fw-semibold">
+                                  {{ item.producto.nombre }}
+                                </td>
+
+                                <td>
+                                  {{ item.cantidad }}
+                                </td>
+
+                                <td class="text-nowrap">
+                                  ${{ '%.2f'|format(item.precio_unitario) }}
+                                </td>
+
+                                <td class="fw-semibold text-nowrap">
+                                  ${{ '%.2f'|format(item.subtotal) }}
+                                </td>
+
                               </tr>
+
                             {% endfor %}
                           </tbody>
+
                         </table>
                       </div>
+
                     {% endif %}
                   </div>
+
                   <!-- Resumen -->
                   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pt-3 border-top">
-                    <a href="/ordenes/{{ orden.id_orden }}" class="btn btn-sm btn-outline-custom">Ver orden completa</a>
+
+                    <a href="/ordenes/{{ orden.id_orden }}" class="btn btn-sm btn-outline-custom">
+                      Ver orden completa
+                    </a>
+
                     <div class="text-md-end">
-                      <p class="text-soft mb-1">Total de la orden</p>
-                      <p class="fs-4 fw-bold mb-0">${{ '%.2f'|format(orden.total) }}</p>
+
+                      <p class="text-soft mb-1">
+                        Total de la orden
+                      </p>
+
+                      <p class="fs-4 fw-bold mb-0">
+                        ${{ '%.2f'|format(orden.total) }}
+                      </p>
+
                     </div>
+
                   </div>
+
                 </div>
               </div>
             </div>
+
           {% endfor %}
+
         </div>
       {% endif %}
     </div>
   </div>
+
 {% endblock %}

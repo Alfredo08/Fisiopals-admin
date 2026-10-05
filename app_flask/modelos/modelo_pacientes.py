@@ -21,6 +21,8 @@ class Paciente:
         self.fecha_creacion = datos['fecha_creacion']
         self.fecha_actualizacion = datos['fecha_actualizacion']
         self.fecha_nacimiento = datos['fecha_nacimiento']
+        self.estado = datos['estado']
+        self.fecha_fallecimiento = datos['fecha_fallecimiento']
 
         self.cliente = None
         self.datos_clinicos = []
@@ -225,6 +227,7 @@ class Paciente:
 
         return paciente
 
+
     @classmethod
     def editar_uno(cls, datos):
         query = """
@@ -238,7 +241,9 @@ class Paciente:
                     historia_clinica = %(historia_clinica)s,
                     inicio_problema = %(inicio_problema)s,
                     diagnostico_vet = %(diagnostico_vet)s,
-                    id_cliente = %(id_cliente)s
+                    id_cliente = %(id_cliente)s,
+                    estado = %(estado)s,
+                    fecha_fallecimiento = %(fecha_fallecimiento)s
                 WHERE id_paciente = %(id_paciente)s;
                 """
 

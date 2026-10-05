@@ -96,6 +96,7 @@ class Orden:
 
         return ordenes
 
+
     @classmethod
     def obtener_uno_con_paciente(cls, datos):
         query = """
@@ -115,6 +116,8 @@ class Orden:
                     pacientes.fecha_creacion AS paciente_fecha_creacion,
                     pacientes.fecha_actualizacion AS paciente_fecha_actualizacion,
                     pacientes.fecha_nacimiento AS paciente_fecha_nacimiento,
+                    pacientes.estado AS paciente_estado,
+                    pacientes.fecha_fallecimiento AS paciente_fecha_fallecimiento,
 
                     clientes.id_cliente AS cliente_id_cliente,
                     clientes.nombre AS cliente_nombre,
@@ -154,7 +157,9 @@ class Orden:
                 "diagnostico_vet": fila["paciente_diagnostico_vet"],
                 "id_cliente": fila["paciente_id_cliente"],
                 "fecha_creacion": fila["paciente_fecha_creacion"],
-                "fecha_actualizacion": fila["paciente_fecha_actualizacion"]
+                "fecha_actualizacion": fila["paciente_fecha_actualizacion"],
+                "estado": fila["paciente_estado"],
+                "fecha_fallecimiento": fila["paciente_fecha_fallecimiento"]
             }
 
             paciente = modelo_pacientes.Paciente(datos_paciente)

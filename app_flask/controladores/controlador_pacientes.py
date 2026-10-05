@@ -101,7 +101,20 @@ def crear_paciente():
         'diagnostico_vet': request.form.get(
             'diagnostico_vet',
             ''
-        ).strip()
+        ).strip(),
+
+        'estado': request.form.get(
+            'estado',
+            'Activo'
+        ).strip(),
+
+        'fecha_fallecimiento': (
+            request.form.get(
+                'fecha_fallecimiento',
+                ''
+            ).strip()
+            or None
+        )
     }
 
     if not Paciente.validar(datos_paciente):
@@ -251,7 +264,20 @@ def actualizar_paciente(id_paciente):
         'diagnostico_vet': request.form.get(
             'diagnostico_vet',
             ''
-        ).strip()
+        ).strip(),
+
+        'estado': request.form.get(
+            'estado',
+            'Activo'
+        ).strip(),
+
+        'fecha_fallecimiento': (
+            request.form.get(
+                'fecha_fallecimiento',
+                ''
+            ).strip()
+            or None
+        )
     }
 
     if not Paciente.validar(datos):
