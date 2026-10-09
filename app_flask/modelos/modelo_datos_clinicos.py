@@ -74,6 +74,7 @@ class DatoClinico:
 
         return datos_clinicos
 
+
     @classmethod
     def obtener_uno_con_paciente(cls, datos):
         query = """
@@ -92,7 +93,9 @@ class DatoClinico:
                     pacientes.id_cliente AS paciente_id_cliente,
                     pacientes.fecha_creacion AS paciente_fecha_creacion,
                     pacientes.fecha_actualizacion AS paciente_fecha_actualizacion,
-                    pacientes.fecha_nacimiento AS paciente_fecha_nacimiento
+                    pacientes.fecha_nacimiento AS paciente_fecha_nacimiento,
+                    pacientes.estado AS paciente_estado,
+                    pacientes.fecha_fallecimiento AS paciente_fecha_fallecimiento
 
                 FROM datos_clinicos
                 JOIN pacientes
@@ -100,9 +103,12 @@ class DatoClinico:
                 WHERE datos_clinicos.id_dato_clinico = %(id_dato_clinico)s;
                 """
 
-        resultado = connectToMySQL(BASE_DATOS).query_db(query, datos)
+        resultado = connectToMySQL(BASE_DATOS).query_db(
+            query,
+            datos
+        )
 
-        if len(resultado) < 1:
+        if resultado is False or len(resultado) < 1:
             return None
 
         fila = resultado[0]
@@ -122,11 +128,16 @@ class DatoClinico:
             "fecha_creacion": fila["paciente_fecha_creacion"],
             "fecha_actualizacion": fila["paciente_fecha_actualizacion"],
             "fecha_nacimiento": fila["paciente_fecha_nacimiento"],
+            "estado": fila["paciente_estado"],
+            "fecha_fallecimiento": fila["paciente_fecha_fallecimiento"]
         }
 
-        dato_clinico.paciente = modelo_pacientes.Paciente(datos_paciente)
+        dato_clinico.paciente = modelo_pacientes.Paciente(
+            datos_paciente
+        )
 
         return dato_clinico
+
 
     @classmethod
     def editar_uno(cls, datos):

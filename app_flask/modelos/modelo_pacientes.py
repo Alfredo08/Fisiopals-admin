@@ -260,29 +260,65 @@ class Paciente:
                 """
         return connectToMySQL(BASE_DATOS).query_db(query, datos)
 
+
     @classmethod
     def buscar(cls, datos):
         query = """
-                SELECT *
+                SELECT
+                    pacientes.*,
+                    clientes.nombre AS cliente_nombre,
+                    clientes.correo AS cliente_correo,
+                    clientes.telefono AS cliente_telefono,
+                    clientes.saldo AS cliente_saldo,
+                    clientes.fecha_creacion AS cliente_fecha_creacion,
+                    clientes.fecha_actualizacion AS cliente_fecha_actualizacion
+
                 FROM pacientes
-                WHERE nombre LIKE %(busqueda)s
-                OR raza LIKE %(busqueda)s
-                OR especie LIKE %(busqueda)s
-                OR sexo LIKE %(busqueda)s
-                ORDER BY nombre;
+
+                LEFT JOIN clientes
+                    ON pacientes.id_cliente = clientes.id_cliente
+
+                WHERE pacientes.nombre LIKE %(busqueda)s
+                    OR pacientes.raza LIKE %(busqueda)s
+                    OR pacientes.especie LIKE %(busqueda)s
+                    OR pacientes.sexo LIKE %(busqueda)s
+                    OR clientes.nombre LIKE %(busqueda)s
+                    OR clientes.correo LIKE %(busqueda)s
+                    OR clientes.telefono LIKE %(busqueda)s
+
+                ORDER BY pacientes.nombre;
                 """
 
-        resultados = connectToMySQL(BASE_DATOS).query_db(query, datos)
+        resultados = connectToMySQL(BASE_DATOS).query_db(
+            query,
+            datos
+        )
 
-        if resultados == False:
+        if resultados is False:
             return []
 
         pacientes = []
 
         for fila in resultados:
-            pacientes.append(cls(fila))
+            paciente = cls(fila)
+
+            if fila['id_cliente'] is not None:
+                datos_cliente = {
+                    'id_cliente': fila['id_cliente'],
+                    'nombre': fila['cliente_nombre'],
+                    'correo': fila['cliente_correo'],
+                    'telefono': fila['cliente_telefono'],
+                    'saldo': fila['cliente_saldo'],
+                    'fecha_creacion': fila['cliente_fecha_creacion'],
+                    'fecha_actualizacion': fila['cliente_fecha_actualizacion']
+                }
+
+                paciente.cliente = modelo_clientes.Cliente(datos_cliente)
+
+            pacientes.append(paciente)
 
         return pacientes
+
     
     @classmethod
     def obtener_todos_con_cliente(cls):
